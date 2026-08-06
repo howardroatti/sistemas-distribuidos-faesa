@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistemas Distribuídos e Computação em Nuvem — FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1}
+  *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.5}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:40px 24px}
+  header .wrap{max-width:960px;margin:0 auto}
+  header h1{margin:0;font-size:30px} header p{margin:8px 0 0;color:#a9c2e8}
+  main{max-width:960px;margin:0 auto;padding:28px 24px 60px}
+  .aviso{background:#fff8e1;border:1px solid #f0c36d;border-radius:8px;padding:12px 16px;margin:0 0 24px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:22px}
+  table{border-collapse:collapse;width:100%;margin-top:8px}
+  th,td{border:1px solid var(--borda);padding:8px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  .badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;background:#dde7f4;color:#0d2b57}
+  .pend{background:#f1f5f9;color:var(--muted)} .ead{background:#fff3cd;color:#8a6d00} .prova{background:#e7f4ea;color:#1c6b34}
+  .chips span{display:inline-block;font-size:13px;padding:3px 10px;border-radius:20px;background:var(--suave);color:var(--azul);margin:2px 6px 2px 0}
+  tr.done td{background:#fbfdff}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:32px;padding-top:14px}
+  .links a{margin-right:16px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Sistemas Distribuídos e Computação em Nuvem</h1>
+  <p>FAESA Centro Universitário · Prof. M.Sc. Howard Cruz Roatti · 2026/2 · quintas-feiras</p>
+</div></header>
+<main>
+  <div class="aviso">💻 Disciplina <strong>prática e cloud-native</strong>: construímos, por partes, um <strong>serviço de IA distribuído</strong> — dos sockets à nuvem. Cada aula traz <strong>laboratório detalhado</strong>, foco no <strong>ENADE</strong> e glossário. Este é um <strong>sumário vivo</strong>: os slides aparecem aqui conforme cada aula é publicada.</div>
+
+  <h2>Trilha do semestre</h2>
+  <p class="chips">
+    <span>C1 · Fundamentos e comunicação</span>
+    <span>C2 · Coordenação e consistência</span>
+    <span>C3 · Nuvem, implantação e segurança</span>
+  </p>
+
+  <h2>Aulas</h2>
+  <table>
+    <thead><tr><th>Aula</th><th>Data</th><th>Tema</th><th>Material</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr class="done"><td>1</td><td>06/08</td>
+        <td>Abertura, diagnóstico e ambiente</td>
+        <td><a href="aulas/aula-01-abertura-diagnostico-ambiente.html">Slides</a> · <a href="aulas/aula-01-abertura-diagnostico-ambiente.pdf">PDF</a></td>
+        <td><span class="badge">✅ publicada</span></td></tr>
+      <tr class="done"><td>2</td><td>13/08</td>
+        <td>Modelos de arquitetura e sockets (TCP/UDP)</td>
+        <td><a href="aulas/aula-02-modelos-arquitetura-sockets.html">Slides</a> · <a href="aulas/aula-02-modelos-arquitetura-sockets.pdf">PDF</a></td>
+        <td><span class="badge">✅ publicada</span></td></tr>
+      <tr><td>3</td><td>20/08</td><td>Concorrência: um servidor para vários clientes</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>4</td><td>27/08</td><td>Do RPC ao gRPC: chamada remota moderna</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>5</td><td>10/09</td><td>Serviços web: REST e OpenAPI com FastAPI</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>6</td><td>EAD</td><td>IA como serviço distribuído (marco do curso)</td><td>—</td><td><span class="badge ead">📶 EAD</span></td></tr>
+      <tr><td>7</td><td>17/09</td><td>Revisão + <strong>Prova C1.A1</strong> · entrega do C1.A2</td><td>—</td><td><span class="badge prova">📝 avaliação</span></td></tr>
+      <tr><td>8</td><td>24/09</td><td>Mensageria, eventos e API Gateway</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>9</td><td>01/10</td><td>Tempo e ordenação: relógios lógicos</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>10</td><td>08/10</td><td>Replicação, consistência e o teorema CAP</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>11</td><td>22/10</td><td>Consenso (Raft) e resiliência</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>12</td><td>29/10</td><td>Revisão + <strong>Prova C2.A1</strong> · entrega do C2.A2</td><td>—</td><td><span class="badge prova">📝 avaliação</span></td></tr>
+      <tr><td>13</td><td>05/11</td><td>Computação em nuvem, containers e o primeiro deploy</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>14</td><td>12/11</td><td>Orquestração, serverless e computação na borda</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>15</td><td>19/11</td><td>Observabilidade: enxergar o que acontece no sistema</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+      <tr><td>16</td><td>EAD</td><td>Segurança, privacidade e LGPD</td><td>—</td><td><span class="badge ead">📶 EAD</span></td></tr>
+      <tr><td>17</td><td>26/11</td><td>Revisão + <strong>Prova C3.A1</strong> · entrega do C3.A2</td><td>—</td><td><span class="badge prova">📝 avaliação</span></td></tr>
+      <tr><td>18</td><td>03/12</td><td>Fechamento: retrospectiva e tendências</td><td>—</td><td><span class="badge pend">⏳ em breve</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px;color:#6b7280;margin-top:8px">📶 <strong>EAD</strong> = Estudo Dirigido · 📝 dia de avaliação (prova A1 + entrega do trabalho A2). <strong>ENADE:</strong> 29/11/2026.</p>
+
+  <footer>
+    <div class="links">
+      <a href="https://github.com/howardroatti/sistemas-distribuidos-faesa" target="_blank">Repositório no GitHub</a>
+      <a href="https://howardroatti.github.io/" target="_blank">Página do professor</a>
+      <a href="mailto:howard.cruz@faesa.br">howard.cruz@faesa.br</a>
+    </div>
+    Material sob licença <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" target="_blank">CC BY 4.0</a>.
+  </footer>
+</main>
+</body>
+</html>
