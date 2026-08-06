@@ -167,6 +167,36 @@ s.close()
 
 ---
 
+## Da demo (Aula 1) ao lab (Aula 2)
+
+Os scripts têm o **mesmo esqueleto de socket**, mas propósitos diferentes:
+
+<div class="cols">
+
+<div>
+
+**Demo da Aula 1 — ver a falha**
+- Cliente manda **uma** mensagem fixa (`"oi"`).
+- Servidor **finge processar** (`time.sleep(15)`) para você **derrubá-lo** no meio.
+- Cliente tem **`settimeout`** + **`try/except`** só para **observar** o erro.
+
+</div>
+
+<div>
+
+**Lab da Aula 2 — o eco funcional**
+- Cliente **interativo** (`input`), envia **várias** mensagens até `sair`.
+- Servidor em **`while True`** ecoa mensagem após mensagem (sem `sleep`).
+- **Sem** timeout e **sem** tratamento de erro — o **caminho feliz**.
+
+</div>
+
+</div>
+
+<div class="aviso">⚠️ O <code>timeout</code> e o tratamento de falha <strong>voltam na Aula 11 (resiliência)</strong>. Por isso o <strong>Passo 4</strong> derruba o servidor: você reencontra a <strong>falha parcial</strong>, agora no <strong>seu</strong> eco.</div>
+
+---
+
 ## Lab · Passo 3 — rodar (dois terminais)
 
 **Terminal 1 — servidor:**
