@@ -2,7 +2,7 @@
 marp: true
 theme: faesa
 paginate: true
-footer: 'Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2'
+footer: 'Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2 · [☰ Sumário](../index.html)'
 ---
 
 <!-- _class: capa -->
@@ -338,3 +338,5 @@ E) UDP, porque estabelece conexão prévia e reduz a latência.
 ### Entregue `eco_udp.py` + `medicao.md`. A Aula 3 começa revendo isto.
 
 **Próxima:** Concorrência — **um servidor para vários clientes** (threads).
+
+<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>

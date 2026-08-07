@@ -2,7 +2,7 @@
 marp: true
 theme: faesa
 paginate: true
-footer: 'Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2'
+footer: 'Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2 · [☰ Sumário](../index.html)'
 ---
 
 <!-- _class: capa -->
@@ -334,3 +334,5 @@ E) A situação **não ocorre** com TCP.
 ### Entregue o repositório `sd-2026-2`. A Aula 2 começa revendo isto.
 
 **Próxima:** Modelos de arquitetura e **sockets (TCP/UDP)** — seu primeiro **servidor de eco**.
+
+<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
