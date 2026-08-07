@@ -188,6 +188,25 @@ git push -u origin main
 
 ---
 
+## Kit da C1.A2 — clone e experimente (hoje)
+
+O trabalho da **C1** já tem um **kit de partida** público. A **rota síncrona roda offline, sem Docker** — dá para provar **hoje, no Windows**:
+
+```powershell
+git clone https://github.com/howardroatti/sd-2026-2-kit-c1a2.git
+cd sd-2026-2-kit-c1a2
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1                 # ativa o ambiente (PowerShell)
+pip install -r requirements.txt
+uvicorn app.api_rest:app --reload --port 8000   # abra http://localhost:8000/docs
+# em OUTRO terminal (com o .venv ativo):
+python exemplos/cliente_rest.py "o atendimento foi otimo"
+```
+
+<div class="dica">💡 O "modelo de IA" é um classificador de sentimento <strong>scikit-learn</strong> que treina sozinho na 1ª execução — <strong>100% offline</strong>. A <strong>fila (Docker/Redis)</strong>, o <strong>worker</strong> e o <strong>gRPC</strong> entram na <strong>VM (amanhã)</strong>; o desafio completo abre na <strong>Aula 6</strong>.</div>
+
+---
+
 <!-- _class: secao -->
 
 # Atividade em sala
@@ -258,7 +277,8 @@ O log da demo mostra a **falha parcial**. As respostas apontam para o mesmo luga
 1. **Confirme** o ambiente: `python --version` e (se houver) `git --version`.
 2. **Crie** o repositório **`sd-2026-2`** no GitHub (Caminho A ou B do slide de ambiente).
 3. **Rode** o exemplo `servidor_eco.py` / `cliente_eco.py` no seu Windows (dois terminais) e observe o erro ao derrubar o servidor.
-4. **Opcional:** se tem pouca prática com Python/HTTP, faça o **roteiro de nivelamento**.
+4. **Espie o futuro:** clone o **kit da C1.A2** e rode a **rota síncrona** (passos no slide *"Kit da C1.A2"*).
+5. **Opcional:** se tem pouca prática com Python/HTTP, faça o **roteiro de nivelamento**.
 
 <div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> link do repositório <code>sd-2026-2</code> criado (o 1º commit pode ser concluído amanhã na VM).</div>
 
