@@ -113,12 +113,12 @@ Se já clonou na Aula 1, é só entrar na pasta e ativar o ambiente. Se não:
 git clone https://github.com/howardroatti/sd-2026-2-kit-c1a2.git
 cd sd-2026-2-kit-c1a2
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1    # barrou com "scripts is disabled"? veja o aviso abaixo
 pip install -r requirements.txt
 uvicorn app.api_rest:app --reload --port 8000    # abra http://localhost:8000/docs
 ```
 
-<div class="dica">💡 Repare no log de subida: <code>[startup] modelo carregado em X.XXXs</code>. Esse é o <strong>modelo sendo carregado UMA vez</strong> (a regra de ouro). Anote esse tempo — é o seu <strong>cold start</strong>.</div>
+<div class="aviso">⚠️ Se a ativação do venv falhar com <em>"running scripts is disabled"</em>, rode <strong>uma vez</strong>: <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> (responda <strong>S</strong>). Repare também no log de subida <code>[startup] modelo carregado em X.XXXs</code> — é o modelo carregado <strong>UMA vez</strong> (a regra de ouro).</div>
 
 ---
 

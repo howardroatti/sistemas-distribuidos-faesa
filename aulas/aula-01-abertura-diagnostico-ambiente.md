@@ -133,6 +133,22 @@ Ao final, você será capaz de:
 
 ---
 
+## Como usar este material (leia primeiro)
+
+**Onde está o código:** todo exemplo citado nos slides (`servidor_eco.py`, esqueletos…) está no **repositório do curso**, em `aulas/exemplos/aulaNN/`.
+
+```powershell
+git clone https://github.com/howardroatti/sistemas-distribuidos-faesa.git
+# sem Git? No GitHub: botão verde  Code → Download ZIP
+```
+
+- **Dois terminais** (vários labs pedem): no VS Code, menu **Terminal → Split Terminal**.
+- **Ativar o venv barrou?** Se o PowerShell disser *"scripts is disabled"*, rode **uma vez**: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (responda **S**).
+
+<div class="dica">💡 Pouca prática com Python/terminal/HTTP? Faça o <strong>roteiro de nivelamento</strong> (<code>nivelamento.md</code> no repositório) antes de começar.</div>
+
+---
+
 ## Ambiente — hoje, sem a VM ainda
 
 <div class="aviso">🖥️ A <strong>máquina virtual</strong> da disciplina fica <strong>disponível amanhã</strong>. Hoje usamos o <strong>Windows nativo</strong> do laboratório — que já tem <strong>Python</strong> e <strong>VS Code</strong>. É o suficiente para tudo de hoje.</div>
@@ -278,7 +294,7 @@ O log da demo mostra a **falha parcial**. As respostas apontam para o mesmo luga
 2. **Crie** o repositório **`sd-2026-2`** no GitHub (Caminho A ou B do slide de ambiente).
 3. **Rode** o exemplo `servidor_eco.py` / `cliente_eco.py` no seu Windows (dois terminais) e observe o erro ao derrubar o servidor.
 4. **Espie o futuro:** clone o **kit da C1.A2** e rode a **rota síncrona** (passos no slide *"Kit da C1.A2"*).
-5. **Opcional:** se tem pouca prática com Python/HTTP, faça o **roteiro de nivelamento**.
+5. **Opcional:** se tem pouca prática com Python/HTTP, faça o **roteiro de nivelamento** (`nivelamento.md` no repositório).
 
 <div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> link do repositório <code>sd-2026-2</code> criado (o 1º commit pode ser concluído amanhã na VM).</div>
 
