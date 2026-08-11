@@ -369,6 +369,5 @@ E) A situação **não ocorre** com TCP.
 # Até a próxima aula 🚀
 ### Entregue o repositório `sd-2026-2`. A Aula 2 começa revendo isto.
 
-**Próxima:** Modelos de arquitetura e **sockets (TCP/UDP)** — seu primeiro **servidor de eco**.
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-02-modelos-arquitetura-sockets.html">Próxima aula →<small>Aula 2 · Sockets (TCP/UDP)</small></a>

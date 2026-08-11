@@ -314,6 +314,6 @@ E) **DELETE** e **200** (OK).
 # Até a próxima aula 🚀
 ### Entregue a API com CRUD completo + 3 testes. A Aula 6 (EAD) consolida o serviço.
 
-**Próxima (Aula 6 · EAD):** **IA como serviço distribuído** — o marco do curso: juntar REST + gRPC + fila no seu serviço.
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-04-rpc-grpc.html">← Anterior<small>Aula 4 · gRPC</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-06-ia-como-servico-ead.html">Próxima aula →<small>Aula 6 · IA como serviço (EAD)</small></a>

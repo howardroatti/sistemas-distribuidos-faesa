@@ -324,6 +324,6 @@ E) Armazenar as **credenciais** de autenticação do serviço.
 # Até a próxima aula 🚀
 ### Entregue o serviço gRPC com 2 métodos + README. A Aula 5 começa revendo isto.
 
-**Próxima:** Serviços web — **REST e OpenAPI com FastAPI** (a interface **para fora**).
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-03-concorrencia-multiplos-clientes.html">← Anterior<small>Aula 3 · Concorrência</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-05-rest-openapi-fastapi.html">Próxima aula →<small>Aula 5 · REST / FastAPI</small></a>

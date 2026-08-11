@@ -346,6 +346,6 @@ E) UDP, porque estabelece conexão prévia e reduz a latência.
 # Até a próxima aula 🚀
 ### Entregue `eco_udp.py` + `medicao.md`. A Aula 3 começa revendo isto.
 
-**Próxima:** Concorrência — **um servidor para vários clientes** (threads).
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-01-abertura-diagnostico-ambiente.html">← Anterior<small>Aula 1 · Abertura</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-03-concorrencia-multiplos-clientes.html">Próxima aula →<small>Aula 3 · Concorrência</small></a>

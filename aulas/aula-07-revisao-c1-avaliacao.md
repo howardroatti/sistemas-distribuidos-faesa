@@ -239,4 +239,5 @@ Dia de entrega do trabalho. **Rode o projeto do zero** e confira contra a **rubr
 
 **Próxima (Aula 8):** **Mensageria, eventos e API Gateway** — a **fila** que o seu worker já usava, agora com a teoria.
 
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-06-ia-como-servico-ead.html">← Anterior<small>Aula 6 · IA como serviço</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>

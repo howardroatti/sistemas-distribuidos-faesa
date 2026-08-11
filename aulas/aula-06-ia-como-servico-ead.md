@@ -266,6 +266,6 @@ E) **Remover** a validação dos dados de entrada.
 # Bom estudo dirigido! 🚀
 ### Traga o repositório do C1.A2 (REST funcionando) e suas dúvidas para a Aula 7.
 
-**Próxima (Aula 7):** Revisão e **Avaliação C1.A1** (prova estilo ENADE) + **entrega do C1.A2**.
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-05-rest-openapi-fastapi.html">← Anterior<small>Aula 5 · REST / FastAPI</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-07-revisao-c1-avaliacao.html">Próxima aula →<small>Aula 7 · Revisão + prova C1</small></a>

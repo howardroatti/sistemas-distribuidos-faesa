@@ -346,6 +346,6 @@ E) *Cold start*; pré-aquecer o serviço.
 # Até a próxima aula 🚀
 ### Entregue `carga.py` + `relatorio_concorrencia.md`. A Aula 4 começa revendo isto.
 
-**Próxima:** Do **RPC ao gRPC** — chamada remota moderna, como se fosse uma função local.
-
-<a class="proximo" href="../index.html">↩ Voltar ao índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-02-modelos-arquitetura-sockets.html">← Anterior<small>Aula 2 · Sockets</small></a>
+<a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-04-rpc-grpc.html">Próxima aula →<small>Aula 4 · Do RPC ao gRPC</small></a>
