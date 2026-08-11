@@ -107,19 +107,43 @@ Um **contador por processo** (começa em 0). Três passos:
 
 ---
 
-## Exemplo — a execução (3 processos)
+## Exemplo — a execução (o número no círculo é o relógio)
 
-Três processos trocam duas mensagens. As **setas** são as mensagens:
+<svg viewBox="0 0 840 400" role="img" style="width:100%;max-width:880px;display:block;margin:4px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="tm" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/></marker>
+    <marker id="mm" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e08a00"/></marker>
+  </defs>
+  <text x="820" y="58" text-anchor="end" fill="#94a3b8" font-size="13" font-style="italic">tempo →</text>
+  <text x="72" y="96" text-anchor="end" font-weight="700" fill="#0d2b57" font-size="17">P1</text>
+  <line x1="90" y1="90" x2="820" y2="90" stroke="#cbd5e1" stroke-width="2" marker-end="url(#tm)"/>
+  <text x="72" y="216" text-anchor="end" font-weight="700" fill="#0d2b57" font-size="17">P2</text>
+  <line x1="90" y1="210" x2="820" y2="210" stroke="#cbd5e1" stroke-width="2" marker-end="url(#tm)"/>
+  <text x="72" y="336" text-anchor="end" font-weight="700" fill="#0d2b57" font-size="17">P3</text>
+  <line x1="90" y1="330" x2="820" y2="330" stroke="#cbd5e1" stroke-width="2" marker-end="url(#tm)"/>
+  <line x1="334" y1="101" x2="437" y2="199" stroke="#e08a00" stroke-width="2.5" marker-end="url(#mm)"/>
+  <text x="238" y="150" fill="#c2740a" font-size="13" font-weight="600">m1 · carimbo 2</text>
+  <line x1="601" y1="221" x2="709" y2="319" stroke="#e08a00" stroke-width="2.5" marker-end="url(#mm)"/>
+  <text x="512" y="268" fill="#c2740a" font-size="13" font-weight="600">m2 · carimbo 4</text>
+  <text x="160" y="58" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">a</text>
+  <circle cx="160" cy="90" r="17" fill="#12437f"/><text x="160" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">1</text>
+  <text x="320" y="58" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">b · envia</text>
+  <circle cx="320" cy="90" r="17" fill="#12437f"/><text x="320" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">2</text>
+  <text x="240" y="180" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">c</text>
+  <circle cx="240" cy="210" r="17" fill="#12437f"/><text x="240" y="216" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">1</text>
+  <text x="450" y="180" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">d · recebe</text>
+  <circle cx="450" cy="210" r="17" fill="#12437f"/><text x="450" y="216" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">3</text>
+  <text x="450" y="252" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="600">máx(1,2)+1</text>
+  <text x="590" y="180" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">e · envia</text>
+  <circle cx="590" cy="210" r="17" fill="#12437f"/><text x="590" y="216" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">4</text>
+  <text x="520" y="300" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">f</text>
+  <circle cx="520" cy="330" r="17" fill="#12437f"/><text x="520" y="336" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">1</text>
+  <text x="720" y="300" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">g · recebe</text>
+  <circle cx="720" cy="330" r="17" fill="#12437f"/><text x="720" y="336" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">5</text>
+  <text x="720" y="372" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="600">máx(1,4)+1</text>
+</svg>
 
-```text
-P1   a → b                        b:  envia m1 ─┐
-                                                │ (m1)
-P2           c → d → e            d:  recebe m1 ┘   e: envia m2 ─┐
-                                                                 │ (m2)
-P3                   f → g        g:  recebe m2 ───────────────── ┘
-```
-
-<div class="dica">💡 Acompanhe a próxima tabela linha a linha — cada linha é <strong>um</strong> evento (a, b, c…).</div>
+<div class="dica">💡 <strong>Círculo azul</strong> = um evento (o número dentro é o <strong>relógio de Lamport</strong>). <strong>Seta laranja</strong> = mensagem, que leva o <strong>carimbo</strong> junto. Nos recebimentos (<strong>d</strong>, <strong>g</strong>): <strong>máximo + 1</strong>.</div>
 
 ---
 
