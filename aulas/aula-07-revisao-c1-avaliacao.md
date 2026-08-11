@@ -237,7 +237,6 @@ Dia de entrega do trabalho. **Rode o projeto do zero** e confira contra a **rubr
 # Boa prova! 🚀
 ### Entregue o C1.A2 no repositório. A C2 começa com um novo tipo de problema.
 
-**Próxima (Aula 8):** **Mensageria, eventos e API Gateway** — a **fila** que o seu worker já usava, agora com a teoria.
-
 <a class="proximo" href="aula-06-ia-como-servico-ead.html">← Anterior<small>Aula 6 · IA como serviço</small></a>
 <a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-08-mensageria-eventos-gateway.html">Próxima aula →<small>Aula 8 · Mensageria/fila</small></a>
