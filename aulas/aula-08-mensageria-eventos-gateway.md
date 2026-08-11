@@ -327,7 +327,6 @@ E) Não há diferença prática entre os dois modelos.
 # Até a próxima aula 🚀
 ### Complete o worker (retentativa + dead-letter) e inicie o C2.A2.
 
-**Próxima (Aula 9):** **Tempo e ordenação** — relógios lógicos: por que "que horas são?" é difícil entre máquinas.
-
 <a class="proximo" href="aula-07-revisao-c1-avaliacao.html">← Anterior<small>Aula 7 · Revisão + prova C1</small></a>
 <a class="proximo" href="../index.html">☰ Índice<small>todas as aulas</small></a>
+<a class="proximo" href="aula-09-relogios-logicos.html">Próxima aula →<small>Aula 9 · Relógios lógicos</small></a>
