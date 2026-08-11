@@ -257,6 +257,15 @@ Com o **cliente conectado**, volte ao **Terminal 1** e **derrube o servidor** co
 
 ---
 
+## No seu trabalho — C1.A2
+
+- **Sockets são o alicerce invisível** do trabalho: as interfaces **gRPC** (Aula 4) e **REST** (Aula 5) que você vai expor **rodam sobre eles**.
+- Você **não os programa diretamente**, mas entender esta camada explica **por que uma chamada ao serviço pode ficar "pendurada"** — é o fundamento do **tempo-limite** que você vai adicionar na **resiliência** (Aula 11).
+
+<div class="dica">💡 É a base sobre a qual as duas interfaces do C1.A2 são construídas. Repositório: <code>sd-2026-2-kit-c1a2</code>.</div>
+
+---
+
 ## Atividade para casa — UDP e comparação
 
 1. **Reescreva** o eco em **UDP**: use `socket.SOCK_DGRAM`; **não há** `listen/accept/connect`. Troque `send`/`recv` por **`sendto`/`recvfrom`** (que já trazem o endereço do remetente).
