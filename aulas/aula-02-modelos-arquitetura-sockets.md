@@ -273,9 +273,9 @@ Com o **cliente conectado**, volte ao **Terminal 1** e **derrube o servidor** co
 3. **Escreva 5 linhas** em `medicao.md` comparando os dois resultados que você **mediu**.
 4. **Commit e push.**
 
-<div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> <code>eco_udp.py</code> + <code>medicao.md</code> com a comparação TCP × UDP.</div>
+<div class="dica">🧰 <strong>Comece pelos esqueletos</strong> em <code>exemplos/aula02/</code> — complete os <code>#&nbsp;TODO</code>: <code>servidor_udp_ESQUELETO.py</code>, <code>cliente_udp_ESQUELETO.py</code> e <code>medir_ESQUELETO.py</code> (a parte <strong>TCP já vem pronta como modelo</strong>; você faz a UDP).</div>
 
-<div class="dica">💡 Dica de medição: use <code>time.perf_counter()</code> antes e depois do laço de 100 mensagens e divida pela quantidade.</div>
+<div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> <code>eco_udp.py</code> + <code>medicao.md</code> com a comparação TCP × UDP.</div>
 
 ---
 

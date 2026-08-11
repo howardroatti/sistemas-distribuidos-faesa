@@ -245,6 +245,8 @@ print("total:", total)           # agora SEMPRE 4000
 3. **Compare** com o servidor single-thread da Aula 2 sob a mesma carga.
 4. **Escreva `relatorio_concorrencia.md`** com os tempos e a **análise**: onde o single-thread trava e por quê.
 
+<div class="dica">🧰 <strong>Comece pelo</strong> <code>exemplos/aula03/carga_ESQUELETO.py</code>: a lógica de <strong>um cliente já está pronta</strong> — você completa os <code>#&nbsp;TODO</code> que <strong>disparam N threads</strong> e medem o total.</div>
+
 <div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> <code>carga.py</code> + <code>relatorio_concorrencia.md</code> com os números que <strong>você</strong> mediu.</div>
 
 ---

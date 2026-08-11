@@ -235,8 +235,10 @@ uvicorn app:app --reload --port 8000
 
 1. **Adicione** `PUT /tarefas/{id}` (atualiza o título) e `DELETE /tarefas/{id}` (remove) — com os **status corretos**.
 2. **Trate os erros:** id inexistente → **404**.
-3. **Escreva 3 testes** (use `TestClient` do FastAPI ou `requests`): criar (201), listar (200), buscar id inexistente (404).
+3. **Escreva 3 testes** (use `TestClient` do FastAPI): criar (201), listar (200), buscar id inexistente (404).
 4. Confirme no **`/docs`** que as novas rotas aparecem **sozinhas**.
+
+<div class="dica">🧰 <strong>Modelo pronto:</strong> <code>exemplos/aula05/test_api_EXEMPLO.py</code> tem o <strong>1º teste feito</strong> + 2 <code>#&nbsp;TODO</code>. Instale <code>pip install pytest httpx</code> e rode <code>pytest -v</code>.</div>
 
 <div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> API REST com <strong>CRUD completo</strong> e <strong>3 testes passando</strong>.</div>
 
