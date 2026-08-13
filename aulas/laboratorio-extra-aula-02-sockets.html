@@ -1,0 +1,128 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laboratório Extra (opcional) — Sockets/Eco TCP</title>
+<style>
+ :root{--az:#0d2b57;--az2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--borda:#cbd5e1;--verde:#0f766e;--verdebg:#ecfdf5;--amarelo:#f0c36d;--amarelobg:#fff8e1;--vermelho:#c0392b}
+ *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);line-height:1.55;background:#fff}
+ header{background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;padding:24px 22px}
+ header h1{margin:0;font-size:22px} header p{margin:6px 0 0;color:#c7d7ef;font-size:14px}
+ main{max-width:960px;margin:0 auto;padding:16px 22px 60px}
+ h2{color:var(--az);font-size:19px;margin:26px 0 4px;border-bottom:2px solid var(--suave);padding-bottom:6px}
+ h3{color:var(--az2);font-size:15.5px;margin:16px 0 2px}
+ code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:.9em}
+ pre{background:#0d1b2e;color:#e6edf6;border-radius:8px;padding:10px 13px;overflow-x:auto;font-size:13px;margin:6px 0}
+ .exp{border:1px solid var(--borda);border-left:4px solid var(--az2);border-radius:8px;padding:10px 14px;margin:12px 0;background:#fcfdff}
+ .exp .obs{color:#475569;font-size:14px} .exp b.q{color:var(--az)}
+ .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;vertical-align:middle;margin-left:6px}
+ .t0{background:var(--verdebg);color:var(--verde)} .tc{background:#e0e7ff;color:#3730a3} .tnet{background:#fef3c7;color:#92400e}
+ .dica{background:var(--verdebg);border-left:5px solid var(--verde);padding:10px 14px;border-radius:6px;margin:14px 0}
+ .aviso{background:var(--amarelobg);border-left:5px solid var(--amarelo);padding:10px 14px;border-radius:6px;margin:14px 0}
+ .naofaca{background:#fef2f2;border-left:5px solid var(--vermelho);padding:10px 14px;border-radius:6px;margin:14px 0}
+ .lead{font-size:15px}
+ ul{margin:6px 0}
+ @media print{header{-webkit-print-color-adjust:exact;print-color-adjust:exact} .exp{break-inside:avoid}}
+</style></head><body>
+<header>
+ <h1>🔬 Laboratório Extra (opcional) — Servidor de Eco em TCP</h1>
+ <p>Sistemas Distribuídos e Computação em Nuvem · 2026/2 · Aula 2 (sockets) · Prof. M.Sc. Howard Cruz Roatti</p>
+</header>
+<main>
+
+<p class="lead">Sobrou tempo? Estes experimentos <b>esticam</b> a aula de hoje e reforçam o que é <b>socket</b>, como o <b>TCP</b> se comporta e a ideia de <b>falha parcial</b>. Não precisa fazer todos — <b>escolha 3 ou 4</b>.</p>
+
+<div class="aviso"><b>Regras do jogo:</b>
+<ul>
+ <li><b>Não altere</b> os arquivos originais <code>servidor_eco.py</code> / <code>cliente_eco.py</code>. Quando um experimento pedir mexer no código, <b>faça uma cópia</b> (ex.: <code>servidor_teste.py</code>) e brinque nela.</li>
+ <li>Trabalhe com <b>dois terminais</b> (PowerShell): um roda o servidor, outro o cliente.</li>
+ <li>Referência: o servidor ouve em <code>127.0.0.1:5000</code> e lê com <code>recv(1024)</code>.</li>
+</ul></div>
+
+<h2>A) Só rodar e observar <span class="tag t0">zero código</span></h2>
+
+<div class="exp">
+ <h3>A1 · Qualquer cliente TCP conversa com o servidor</h3>
+ Em vez do <code>cliente_eco.py</code>, conecte no servidor com outro cliente TCP genérico — <b>PuTTY</b> em modo <b>“Raw”</b> (Host <code>127.0.0.1</code>, Port <code>5000</code>), ou <code>ncat 127.0.0.1 5000</code>. Digite algo e veja o eco voltar.
+ <p class="obs"><b class="q">Por quê importa:</b> o servidor não sabe (nem se importa) quem é o cliente. Um <b>socket</b> é só <b>IP + porta</b>; o protocolo é agnóstico de linguagem/ferramenta.</p>
+</div>
+
+<div class="exp">
+ <h3>A2 · Os dois “nãos” da conexão</h3>
+ Aponte o cliente para dois destinos que <b>não</b> respondem:
+ <ul>
+  <li>uma <b>porta sem servidor</b> (ex.: <code>5001</code>) → erro imediato <code>ConnectionRefusedError</code> (WinError 10061);</li>
+  <li>um <b>IP que não existe</b> na rede (ex.: <code>10.255.255.1</code>) → o cliente <b>pendura</b> e só depois dá timeout.</li>
+ </ul>
+ <p class="obs"><b class="q">Por quê importa:</b> “recusado” ≠ “silêncio”. É a <b>ambiguidade da falha parcial</b> da Aula 1 — pela ausência de resposta você não sabe se caiu, está lento ou se perdeu.</p>
+</div>
+
+<div class="exp">
+ <h3>A3 · Derrubar o servidor em 3 momentos</h3>
+ Com o servidor no ar, derrube-o com <code>Ctrl+C</code> em instantes diferentes e veja o erro no cliente mudar:
+ <ul>
+  <li><b>antes</b> de conectar → recusada (10061);</li>
+  <li><b>conectado e ocioso</b> → o <code>recv</code> do cliente devolve <code>b''</code> (fim de conexão);</li>
+  <li><b>logo após enviar</b> uma mensagem → <code>ConnectionResetError</code> (WinError 10054).</li>
+ </ul>
+ <p class="obs"><b class="q">Por quê importa:</b> o <b>momento</b> da falha muda o sintoma — aprofunda o experimento de derrubar o servidor que fizemos em aula.</p>
+</div>
+
+<div class="exp">
+ <h3>A4 · Ver a conexão “por fora”</h3>
+ Num terceiro terminal, observe a conexão nascer e morrer:
+ <pre>netstat -ano | findstr :5000</pre>
+ Rode <b>antes</b> de conectar (nada / só LISTENING), <b>durante</b> (<code>ESTABLISHED</code>) e <b>depois</b> de fechar (<code>TIME_WAIT</code>).
+ <p class="obs"><b class="q">Bônus (Wireshark):</b> capture em <code>Loopback</code> e veja o handshake <b>SYN → SYN,ACK → ACK</b> e o <b>FIN</b> no fim. A conexão TCP tem um ciclo de vida visível.</p>
+</div>
+
+<div class="exp">
+ <h3>A5 · Porta ocupada</h3>
+ Abra <b>dois servidores na mesma porta 5000</b> ao mesmo tempo.
+ <p class="obs"><b class="q">O que acontece:</b> o segundo falha com <code>OSError</code> / <b>WinError 10048</b> (“endereço já em uso”). Fecha o círculo do slide de troubleshooting.</p>
+</div>
+
+<h2>B) Mexendo numa cópia do script <span class="tag tc">edite a cópia</span></h2>
+
+<div class="exp">
+ <h3>B1 · Mensagem maior que o buffer</h3>
+ Na sua <b>cópia</b>, mande do cliente uma mensagem <b>bem grande</b> (ex.: <code>"A" * 5000</code>) e mantenha o servidor lendo com <code>recv(1024)</code>. Observe a resposta chegar <b>picada</b> (em pedaços) ou truncada.
+ <p class="obs"><b class="q">Lição forte:</b> <b>TCP é um fluxo de bytes</b>, não “mensagens” — <code>recv(n)</code> não garante entregar a mensagem inteira de uma vez. <i>(Como resolver isso — enquadramento/cabeçalho de tamanho — a gente vê mais à frente.)</i></p>
+</div>
+
+<div class="exp">
+ <h3>B2 · Detectar o fechamento gracioso</h3>
+ Faça o servidor (na cópia) <b>tratar</b> o caso de <code>recv</code> retornar <code>b''</code> — que significa “o outro lado fechou” — encerrando o loop daquela conexão com uma mensagem clara em vez de travar.
+ <p class="obs"><b class="q">Por quê importa:</b> saber diferenciar “sem dados agora” de “conexão encerrada” é básico e evita servidores que “penduram”.</p>
+</div>
+
+<div class="exp">
+ <h3>B3 · Acentos e emoji na rede</h3>
+ Envie <code>"coração 🚀 ação"</code> e experimente mudar o <code>.encode()</code>/<code>.decode()</code> (ex.: forçar <code>latin-1</code> de um lado e <code>utf-8</code> do outro).
+ <p class="obs"><b class="q">Lição:</b> na rede <b>tudo é byte</b>; texto só existe com uma <b>codificação</b> combinada entre as pontas.</p>
+</div>
+
+<div class="exp">
+ <h3>B4 · Medir a latência (ida e volta)</h3>
+ Na cópia do cliente, cronometre o <b>round-trip</b> de uma mensagem e repita N vezes:
+ <pre>import time
+inicio = time.perf_counter()
+sock.sendall(msg.encode())
+resposta = sock.recv(1024)
+rtt_ms = (time.perf_counter() - inicio) * 1000
+print(f"RTT: {rtt_ms:.3f} ms")</pre>
+ Rode 100 vezes e calcule <b>média / mínimo / máximo</b>; compare mensagem pequena × grande.
+ <p class="obs"><b class="q">Conecta com:</b> o conceito de <b>latência</b> da Aula 1 — agora medida por você.</p>
+</div>
+
+<h2>C) Sabor “distribuído de verdade” <span class="tag tnet">precisa de rede</span></h2>
+
+<div class="exp">
+ <h3>C1 · Sair do loopback</h3>
+ Na cópia do servidor, troque o bind de <code>127.0.0.1</code> para <code>0.0.0.0</code> (aceita conexões da rede) e peça a um <b>colega</b> para conectar do PC dele usando o <b>IP da sua máquina</b> (<code>ipconfig</code> mostra o IPv4). Libere o <b>firewall</b> quando o Windows perguntar.
+ <p class="obs"><b class="q">Por quê importa:</b> deixa de ser “tudo na mesma máquina” e vira um sistema <b>entre máquinas de verdade</b> — a mesma falha parcial, agora com latência de rede real.</p>
+</div>
+
+<h2>📸 Como registrar (entrega leve, opcional)</h2>
+<div class="dica">Escolha <b>3 ou 4</b> experimentos e entregue um <b>print (ou log)</b> de cada, com <b>uma frase</b>: <i>“o que eu esperava × o que aconteceu”</i>. Sem relatório longo — o valor está em <b>você observar a própria execução</b>.</div>
+
+<div class="naofaca"><b>Ainda não precisa (fica pra frente):</b> servidor com <b>threads/assíncrono</b> de verdade (a versão “vários clientes” já é um bom <b>desafio</b>), <b>serialização</b> (JSON/pickle), <b>RPC/HTTP</b> e <b>relógios lógicos</b>. Hoje o foco é <b>dominar sockets e TCP</b>.</div>
+
+</main></body></html>
