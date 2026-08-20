@@ -170,28 +170,34 @@ Executá-las **literalmente ao mesmo tempo**, em núcleos diferentes.
 
 ## Concorrência × Paralelismo — a diferença
 
-<svg viewBox="0 0 860 320" role="img" style="width:100%;max-width:820px;display:block;margin:6px auto 0;font-family:'Segoe UI',Arial,sans-serif">
-  <text x="30" y="40" fill="#0d2b57" font-size="15" font-weight="700">1 núcleo — concorrência (reveza)</text>
-  <text x="820" y="40" text-anchor="end" fill="#64748b" font-size="12.5" font-style="italic">tempo →</text>
-  <rect x="120" y="56" width="86" height="40" rx="6" fill="#12437f"/><text x="163" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
-  <rect x="208" y="56" width="86" height="40" rx="6" fill="#e08a00"/><text x="251" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
-  <rect x="296" y="56" width="86" height="40" rx="6" fill="#12437f"/><text x="339" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
-  <rect x="384" y="56" width="86" height="40" rx="6" fill="#e08a00"/><text x="427" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
-  <rect x="472" y="56" width="86" height="40" rx="6" fill="#12437f"/><text x="515" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
-  <rect x="560" y="56" width="86" height="40" rx="6" fill="#e08a00"/><text x="603" y="81" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
-  <text x="120" y="128" fill="#64748b" font-size="12.5">um de cada vez, alternando rápido — <tspan font-weight="700" fill="#334155">parece</tspan> simultâneo</text>
-  <line x1="30" y1="160" x2="830" y2="160" stroke="#e2e8f0" stroke-width="1.5"/>
-  <text x="30" y="196" fill="#0d2b57" font-size="15" font-weight="700">2 núcleos — paralelismo (ao mesmo tempo)</text>
-  <text x="60" y="235" fill="#334155" font-size="13" font-weight="700">núcleo 1</text>
-  <rect x="130" y="214" width="500" height="34" rx="6" fill="#12437f"/><text x="380" y="237" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Cliente A</text>
-  <text x="60" y="281" fill="#334155" font-size="13" font-weight="700">núcleo 2</text>
-  <rect x="130" y="260" width="500" height="34" rx="6" fill="#e08a00"/><text x="380" y="283" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Cliente B</text>
-  <line x1="660" y1="206" x2="660" y2="302" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="675" y="256" fill="#16a34a" font-size="12.5" font-weight="700">mesmo</text>
-  <text x="675" y="272" fill="#16a34a" font-size="12.5" font-weight="700">instante</text>
+<svg viewBox="0 0 860 340" role="img" style="width:100%;max-width:840px;display:block;margin:2px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs><marker id="cp" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/></marker></defs>
+  <text x="30" y="28" fill="#0d2b57" font-size="15" font-weight="700">CONCORRÊNCIA — 1 núcleo reveza</text>
+  <text x="830" y="28" text-anchor="end" fill="#64748b" font-size="12.5" font-style="italic">tempo →</text>
+  <rect x="30" y="44" width="94" height="46" rx="8" fill="#334155"/>
+  <text x="77" y="66" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">núcleo</text>
+  <text x="77" y="82" text-anchor="middle" fill="#cbd5e1" font-size="11">(1 CPU)</text>
+  <line x1="124" y1="67" x2="156" y2="67" stroke="#94a3b8" stroke-width="2" marker-end="url(#cp)"/>
+  <rect x="160" y="47" width="78" height="40" rx="6" fill="#12437f"/><text x="199" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
+  <rect x="240" y="47" width="78" height="40" rx="6" fill="#e08a00"/><text x="279" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
+  <rect x="320" y="47" width="78" height="40" rx="6" fill="#12437f"/><text x="359" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
+  <rect x="400" y="47" width="78" height="40" rx="6" fill="#e08a00"/><text x="439" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
+  <rect x="480" y="47" width="78" height="40" rx="6" fill="#12437f"/><text x="519" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">A</text>
+  <rect x="560" y="47" width="78" height="40" rx="6" fill="#e08a00"/><text x="599" y="72" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">B</text>
+  <text x="160" y="110" fill="#64748b" font-size="12.5">mexe em A, troca pra B, volta pra A… <tspan font-weight="700" fill="#334155">tão rápido que parecem simultâneos</tspan></text>
+  <line x1="30" y1="140" x2="830" y2="140" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="30" y="172" fill="#0d2b57" font-size="15" font-weight="700">PARALELISMO — 2 núcleos ao mesmo tempo</text>
+  <rect x="30" y="190" width="94" height="38" rx="8" fill="#334155"/><text x="77" y="214" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">núcleo 1</text>
+  <rect x="140" y="190" width="490" height="38" rx="6" fill="#12437f"/><text x="385" y="214" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Tarefa A</text>
+  <rect x="30" y="236" width="94" height="38" rx="8" fill="#334155"/><text x="77" y="260" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">núcleo 2</text>
+  <rect x="140" y="236" width="490" height="38" rx="6" fill="#e08a00"/><text x="385" y="260" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Tarefa B</text>
+  <line x1="655" y1="184" x2="655" y2="280" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="668" y="228" fill="#16a34a" font-size="12.5" font-weight="700">no mesmo</text>
+  <text x="668" y="244" fill="#16a34a" font-size="12.5" font-weight="700">instante</text>
+  <text x="30" y="312" fill="#64748b" font-size="12">A e B = duas tarefas (ex.: atender <tspan fill="#334155" font-weight="700">Cliente A</tspan> e <tspan fill="#334155" font-weight="700">Cliente B</tspan>)</text>
 </svg>
 
-<div class="dica">💡 Threads dão <strong>concorrência</strong> sempre; viram <strong>paralelismo</strong> real só quando há <strong>vários núcleos</strong>. Para servidor de rede (que vive <em>esperando</em>), a concorrência já resolve.</div>
+<div class="dica">💡 <strong>Em miúdos:</strong> <strong>1 cozinheiro com 2 panelas</strong>, mexendo uma e depois a outra = <strong>concorrência</strong>; <strong>2 cozinheiros, 1 panela cada</strong> = <strong>paralelismo</strong>. Threads sempre dão concorrência; paralelismo <strong>só com vários núcleos</strong>. Um servidor de rede <strong>vive esperando a rede</strong> — então a concorrência já resolve.</div>
 
 ---
 
@@ -243,6 +249,64 @@ Executá-las **literalmente ao mesmo tempo**, em núcleos diferentes.
 </svg>
 
 <div class="dica">💡 <strong>Em miúdos:</strong> dois garçons leem o <strong>mesmo caderno</strong> ("mesa 41"), cada um escreve "42" sem ver o outro. Uma anotação some.</div>
+
+---
+
+## A exclusão mútua resolve
+
+O `total += 1` são, na real, **três passos**: **ler → somar → gravar**. O bug é outra thread **entrar no meio** e ler o **mesmo** valor. A correção: tornar esses três passos **indivisíveis** — **uma thread por vez**.
+
+Três nomes que andam juntos:
+
+- **Seção crítica** — o trecho que mexe no dado compartilhado (`total += 1`).
+- **Exclusão mútua** — a regra: **no máximo uma** thread dentro da seção crítica.
+- **Lock (trava)** — o mecanismo que faz a regra valer (`with lock:`).
+
+<div class="dica">💡 <strong>Em miúdos:</strong> agora existe <strong>uma única caneta</strong> (o lock). Quem chega primeiro <strong>pega a caneta</strong>, faz a anotação inteira e só então <strong>devolve</strong>. A outra espera — e, ao pegar, já lê o valor <strong>atualizado</strong>.</div>
+
+---
+
+## O mesmo cenário, agora com lock (funcionando)
+
+<svg viewBox="0 0 880 424" role="img" style="width:100%;max-width:880px;display:block;margin:0 auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="cb" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#12437f"/></marker>
+    <marker id="co" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e08a00"/></marker>
+  </defs>
+  <rect x="86" y="92" width="708" height="96" rx="10" fill="#eff6fd"/>
+  <rect x="86" y="238" width="708" height="96" rx="10" fill="#fff7ec"/>
+  <text x="98" y="86" fill="#12437f" font-size="12.5" font-weight="700">1º — Thread 1 tem o lock 🔒 (Thread 2 espera)</text>
+  <text x="98" y="232" fill="#c2740a" font-size="12.5" font-weight="700">2º — Thread 1 liberou · agora Thread 2 tem o lock 🔒</text>
+  <rect x="120" y="24" width="180" height="42" rx="10" fill="#12437f"/>
+  <text x="210" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Thread 1</text>
+  <rect x="580" y="24" width="180" height="42" rx="10" fill="#e08a00"/>
+  <text x="670" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Thread 2</text>
+  <text x="440" y="20" text-anchor="middle" fill="#0d2b57" font-size="13.5" font-weight="700">total (compartilhado)</text>
+  <line x1="210" y1="70" x2="210" y2="352" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="670" y1="70" x2="670" y2="352" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="440" y1="70" x2="440" y2="352" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="405" y="96" width="70" height="34" rx="17" fill="#eef4fb" stroke="#94a3b8" stroke-width="1.5"/><text x="440" y="119" text-anchor="middle" fill="#0d2b57" font-size="16" font-weight="700">41</text>
+  <rect x="405" y="196" width="70" height="34" rx="17" fill="#eef4fb" stroke="#94a3b8" stroke-width="1.5"/><text x="440" y="219" text-anchor="middle" fill="#0d2b57" font-size="16" font-weight="700">42</text>
+  <text x="40" y="118" fill="#94a3b8" font-size="12">t1</text>
+  <line x1="405" y1="113" x2="214" y2="113" stroke="#12437f" stroke-width="2.2" marker-end="url(#cb)"/>
+  <text x="300" y="105" text-anchor="middle" fill="#12437f" font-size="13" font-weight="600">lê → vê 41</text>
+  <text x="40" y="172" fill="#94a3b8" font-size="12">t2</text>
+  <line x1="214" y1="167" x2="401" y2="167" stroke="#12437f" stroke-width="2.2" marker-end="url(#cb)"/>
+  <text x="300" y="159" text-anchor="middle" fill="#12437f" font-size="13" font-weight="600">grava 42 · devolve 🔒</text>
+  <text x="670" y="150" text-anchor="middle" fill="#94a3b8" font-size="12.5" font-style="italic">aguarda a vez…</text>
+  <text x="40" y="270" fill="#94a3b8" font-size="12">t3</text>
+  <line x1="475" y1="265" x2="666" y2="265" stroke="#e08a00" stroke-width="2.2" marker-end="url(#co)"/>
+  <text x="580" y="257" text-anchor="middle" fill="#c2740a" font-size="13" font-weight="600">lê → vê 42</text>
+  <text x="40" y="320" fill="#94a3b8" font-size="12">t4</text>
+  <line x1="666" y1="315" x2="479" y2="315" stroke="#e08a00" stroke-width="2.2" marker-end="url(#co)"/>
+  <text x="580" y="307" text-anchor="middle" fill="#c2740a" font-size="13" font-weight="600">grava 43</text>
+  <text x="210" y="300" text-anchor="middle" fill="#94a3b8" font-size="12.5" font-style="italic">já concluiu</text>
+  <rect x="326" y="360" width="228" height="54" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="440" y="383" text-anchor="middle" fill="#14532d" font-size="15" font-weight="700">total = 43 ✓</text>
+  <text x="440" y="403" text-anchor="middle" fill="#16a34a" font-size="12.5" font-weight="600">as somas foram enfileiradas — nada se perde</text>
+</svg>
+
+<div class="dica">💡 Mesmos quatro passos do slide anterior — mas o <strong>lock</strong> impede a Thread 2 de ler <strong>antes</strong> de a Thread 1 gravar. Elas <strong>se revezam</strong> na seção crítica, e o resultado fica <strong>certo (43)</strong>.</div>
 
 ---
 
@@ -381,7 +445,7 @@ print("total:", total)           # agora SEMPRE 4000
   <text x="700" y="258" text-anchor="middle" fill="#16a34a" font-size="13" font-weight="700">✓ nada se perde</text>
 </svg>
 
-<div class="dica">💡 <strong>Em miúdos:</strong> o caderno agora fica com a <strong>caneta única</strong>. Quem quer anotar pega a caneta, escreve, devolve — o outro espera. Ninguém escreve por cima.</div>
+<div class="dica">💡 <strong>Recapitulando o lock:</strong> <strong>uma thread por vez</strong> dentro da seção crítica; as demais <strong>esperam a vez</strong>. É a exclusão mútua que você acabou de escrever com <code>with lock:</code> — a mesma ideia que o gráfico da corrida mostrou funcionando.</div>
 
 ---
 
