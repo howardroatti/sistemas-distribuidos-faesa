@@ -43,6 +43,34 @@ A pergunta da C1: **como dois programas conversam de forma confiável pela rede?
 
 ---
 
+## A trilha da C1 — de byte cru a serviço de IA
+
+<svg viewBox="0 0 860 250" role="img" style="width:100%;max-width:850px;display:block;margin:8px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="tb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8"/></marker>
+    <marker id="tbig" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#12437f"/></marker>
+  </defs>
+  <text x="430" y="24" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">a pergunta da C1: como dois programas conversam de forma confiável pela rede?</text>
+  <rect x="20" y="52" width="120" height="70" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/><text x="80" y="76" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">Aula 1</text><text x="80" y="96" text-anchor="middle" fill="#334155" font-size="12" font-weight="600">Fundamentos</text><text x="80" y="113" text-anchor="middle" fill="#64748b" font-size="10.5">falha parcial</text>
+  <rect x="160" y="52" width="120" height="70" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/><text x="220" y="76" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">Aula 2</text><text x="220" y="96" text-anchor="middle" fill="#334155" font-size="12" font-weight="600">Sockets</text><text x="220" y="113" text-anchor="middle" fill="#64748b" font-size="10.5">TCP × UDP</text>
+  <rect x="300" y="52" width="120" height="70" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/><text x="360" y="76" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">Aula 3</text><text x="360" y="96" text-anchor="middle" fill="#334155" font-size="12" font-weight="600">Concorrência</text><text x="360" y="113" text-anchor="middle" fill="#64748b" font-size="10.5">corrida + lock</text>
+  <rect x="440" y="52" width="120" height="70" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/><text x="500" y="76" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">Aula 4</text><text x="500" y="96" text-anchor="middle" fill="#334155" font-size="12" font-weight="600">gRPC</text><text x="500" y="113" text-anchor="middle" fill="#64748b" font-size="10.5">contrato .proto</text>
+  <rect x="580" y="52" width="120" height="70" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/><text x="640" y="76" text-anchor="middle" fill="#0d2b57" font-size="13" font-weight="700">Aula 5</text><text x="640" y="96" text-anchor="middle" fill="#334155" font-size="12" font-weight="600">REST</text><text x="640" y="113" text-anchor="middle" fill="#64748b" font-size="10.5">verbos/status</text>
+  <rect x="720" y="52" width="120" height="70" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/><text x="780" y="76" text-anchor="middle" fill="#14532d" font-size="13" font-weight="700">Aula 6</text><text x="780" y="96" text-anchor="middle" fill="#14532d" font-size="12" font-weight="600">IA serviço</text><text x="780" y="113" text-anchor="middle" fill="#16a34a" font-size="10.5">modelo + API</text>
+  <line x1="140" y1="87" x2="158" y2="87" stroke="#94a3b8" stroke-width="2" marker-end="url(#tb)"/>
+  <line x1="280" y1="87" x2="298" y2="87" stroke="#94a3b8" stroke-width="2" marker-end="url(#tb)"/>
+  <line x1="420" y1="87" x2="438" y2="87" stroke="#94a3b8" stroke-width="2" marker-end="url(#tb)"/>
+  <line x1="560" y1="87" x2="578" y2="87" stroke="#94a3b8" stroke-width="2" marker-end="url(#tb)"/>
+  <line x1="700" y1="87" x2="718" y2="87" stroke="#94a3b8" stroke-width="2" marker-end="url(#tb)"/>
+  <line x1="40" y1="176" x2="812" y2="176" stroke="#12437f" stroke-width="3" marker-end="url(#tbig)"/>
+  <text x="44" y="206" fill="#334155" font-size="12.5" font-weight="700">byte cru no socket</text>
+  <text x="812" y="206" text-anchor="end" fill="#16a34a" font-size="12.5" font-weight="700">serviço de IA publicado</text>
+</svg>
+
+<div class="dica">💡 Cada aula acrescentou <strong>uma camada de abstração</strong> sobre a anterior — do byte solto no socket até uma API de IA que o mundo consome. As 5 questões a seguir percorrem exatamente essa trilha.</div>
+
+---
+
 ## As 6 perguntas que você precisa saber responder
 
 Se você responde estas **com segurança**, está pronto para a C1.A1:
