@@ -72,6 +72,37 @@ Ao final, você será capaz de:
 
 ---
 
+## Por que o relógio engana — um exemplo
+
+<svg viewBox="0 0 860 280" role="img" style="width:100%;max-width:840px;display:block;margin:6px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="lt" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/></marker>
+  </defs>
+  <text x="120" y="34" fill="#0d2b57" font-size="13" font-weight="700">tempo real — o que de fato aconteceu</text>
+  <line x1="120" y1="64" x2="756" y2="64" stroke="#cbd5e1" stroke-width="2" marker-end="url(#lt)"/>
+  <text x="770" y="68" fill="#94a3b8" font-size="12" font-style="italic">→</text>
+  <text x="322" y="50" text-anchor="middle" fill="#12437f" font-size="12.5" font-weight="700">Pedido A · 1º</text>
+  <circle cx="322" cy="64" r="8" fill="#12437f"/>
+  <text x="582" y="50" text-anchor="middle" fill="#c2740a" font-size="12.5" font-weight="700">Pedido B · 2º</text>
+  <circle cx="582" cy="64" r="8" fill="#e08a00"/>
+  <line x1="322" y1="74" x2="322" y2="106" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <line x1="582" y1="74" x2="582" y2="106" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <rect x="246" y="108" width="152" height="72" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/>
+  <text x="322" y="134" text-anchor="middle" fill="#0d2b57" font-size="13.5" font-weight="700">Servidor 1</text>
+  <text x="322" y="160" text-anchor="middle" fill="#334155" font-size="14" font-family="Consolas,monospace" font-weight="700">🕙 10:00:05</text>
+  <rect x="506" y="108" width="172" height="72" rx="10" fill="#eef4fb" stroke="#12437f" stroke-width="2"/>
+  <text x="592" y="130" text-anchor="middle" fill="#0d2b57" font-size="13.5" font-weight="700">Servidor 2</text>
+  <text x="592" y="152" text-anchor="middle" fill="#334155" font-size="14" font-family="Consolas,monospace" font-weight="700">🕙 10:00:02</text>
+  <text x="592" y="170" text-anchor="middle" fill="#b91c1c" font-size="11">relógio atrasado</text>
+  <rect x="150" y="204" width="560" height="52" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="430" y="226" text-anchor="middle" fill="#991b1b" font-size="12.5" font-weight="700">Ordenando pelo carimbo: 02 (B) &lt; 05 (A) → pareceria B antes de A.</text>
+  <text x="430" y="245" text-anchor="middle" fill="#dc2626" font-size="12" font-weight="700">ERRADO — A aconteceu primeiro. O relógio inverteu a ordem real.</text>
+</svg>
+
+<div class="dica">💡 <strong>Em miúdos:</strong> dois relógios de parede nunca batem igual. Se cada foto guarda a hora do <em>seu</em> relógio, <strong>não dá para confiar nela</strong> para dizer o que aconteceu primeiro.</div>
+
+---
+
 ## A virada de chave 💡
 
 Se não podemos confiar na **hora**, o que sobra?
