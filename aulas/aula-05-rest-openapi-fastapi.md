@@ -108,12 +108,71 @@ O REST organiza tudo em torno de **recursos** (substantivos → URLs): `/tarefas
 
 ---
 
+## Anatomia de uma requisição REST
+
+<svg viewBox="0 0 860 320" role="img" style="width:100%;max-width:840px;display:block;margin:6px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs><marker id="an" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/></marker></defs>
+  <rect x="30" y="30" width="800" height="106" rx="12" fill="#eef4fb" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="48" y="54" fill="#0d2b57" font-size="13" font-weight="700">REQUISIÇÃO</text>
+  <rect x="56" y="66" width="94" height="44" rx="8" fill="#16a34a"/><text x="103" y="94" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">POST</text>
+  <text x="168" y="96" fill="#0d2b57" font-size="18" font-family="Consolas,monospace" font-weight="700">/tarefas</text>
+  <rect x="336" y="66" width="320" height="44" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="352" y="94" fill="#334155" font-size="13" font-family="Consolas,monospace">{ "titulo": "estudar SD" }</text>
+  <text x="103" y="128" text-anchor="middle" fill="#16a34a" font-size="11.5" font-weight="700">a ação</text>
+  <text x="210" y="128" text-anchor="middle" fill="#12437f" font-size="11.5" font-weight="700">o recurso (o quê)</text>
+  <text x="496" y="128" text-anchor="middle" fill="#64748b" font-size="11.5" font-weight="700">o dado enviado (corpo)</text>
+  <line x1="430" y1="138" x2="430" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#an)"/>
+  <text x="512" y="163" fill="#334155" font-size="12" font-weight="700">servidor processa</text>
+  <rect x="30" y="184" width="800" height="106" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="48" y="208" fill="#14532d" font-size="13" font-weight="700">RESPOSTA</text>
+  <rect x="56" y="220" width="150" height="44" rx="8" fill="#16a34a"/><text x="131" y="248" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">201 Created</text>
+  <rect x="336" y="220" width="320" height="44" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="352" y="248" fill="#334155" font-size="13" font-family="Consolas,monospace">{ "id": 1, "titulo": "estudar SD" }</text>
+  <text x="131" y="282" text-anchor="middle" fill="#16a34a" font-size="11.5" font-weight="700">o resultado</text>
+</svg>
+
+<div class="dica">💡 <strong>Em miúdos:</strong> é como um balcão dos Correios: o <strong>verbo</strong> é o que você quer fazer (enviar, consultar), a <strong>URL</strong> é o balcão certo, o <strong>status</strong> é o carimbo de volta (deu certo · não achei · deu erro).</div>
+
+---
+
 ## Conceito 2/3 — Idempotência (guarde para depois)
 
 - Uma operação é **idempotente** quando, **repetida**, leva ao **mesmo estado final**.
 - **GET, PUT e DELETE** são idempotentes; **POST não é** — cada chamada **cria um novo** recurso.
 
 <div class="aviso">⚠️ Essa distinção volta a importar na <strong>resiliência</strong> (Aula 11): só é seguro <strong>repetir automaticamente</strong> (retentativa) uma operação <strong>idempotente</strong>. Repetir um POST pode criar recursos duplicados — a semente da <strong>idempotência</strong> que você viu na Aula 1.</div>
+
+---
+
+## Idempotência, visualmente
+
+<svg viewBox="0 0 860 320" role="img" style="width:100%;max-width:840px;display:block;margin:4px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="ir" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#dc2626"/></marker>
+    <marker id="ig" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#16a34a"/></marker>
+  </defs>
+  <text x="30" y="30" fill="#b91c1c" font-size="14" font-weight="700">POST /tarefas — repetido 3× · NÃO idempotente</text>
+  <rect x="30" y="46" width="130" height="56" rx="10" fill="#fff7ec" stroke="#e08a00" stroke-width="2"/>
+  <text x="95" y="70" text-anchor="middle" fill="#7c4a03" font-size="14" font-weight="700">POST ×3</text>
+  <text x="95" y="90" text-anchor="middle" fill="#c2740a" font-size="11">cada um cria</text>
+  <rect x="300" y="52" width="150" height="44" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="375" y="80" text-anchor="middle" fill="#991b1b" font-size="13.5" font-weight="700">Tarefa #1</text>
+  <rect x="470" y="52" width="150" height="44" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="545" y="80" text-anchor="middle" fill="#991b1b" font-size="13.5" font-weight="700">Tarefa #2</text>
+  <rect x="640" y="52" width="150" height="44" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="715" y="80" text-anchor="middle" fill="#991b1b" font-size="13.5" font-weight="700">Tarefa #3</text>
+  <line x1="160" y1="74" x2="298" y2="74" stroke="#dc2626" stroke-width="2" marker-end="url(#ir)"/>
+  <line x1="160" y1="74" x2="468" y2="74" stroke="#dc2626" stroke-width="1.6" opacity="0.5" marker-end="url(#ir)"/>
+  <line x1="160" y1="74" x2="638" y2="74" stroke="#dc2626" stroke-width="1.6" opacity="0.5" marker-end="url(#ir)"/>
+  <text x="430" y="128" text-anchor="middle" fill="#b91c1c" font-size="12.5" font-weight="700">3 recursos diferentes → repetir cria duplicados</text>
+  <line x1="30" y1="150" x2="830" y2="150" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="30" y="186" fill="#16a34a" font-size="14" font-weight="700">PUT /tarefas/7 — repetido 3× · idempotente</text>
+  <rect x="30" y="204" width="130" height="56" rx="10" fill="#fff7ec" stroke="#e08a00" stroke-width="2"/>
+  <text x="95" y="228" text-anchor="middle" fill="#7c4a03" font-size="14" font-weight="700">PUT ×3</text>
+  <text x="95" y="248" text-anchor="middle" fill="#c2740a" font-size="11">no mesmo item</text>
+  <rect x="470" y="204" width="220" height="56" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/><text x="580" y="228" text-anchor="middle" fill="#14532d" font-size="13.5" font-weight="700">Tarefa #7</text><text x="580" y="248" text-anchor="middle" fill="#16a34a" font-size="11.5">titulo = X (o mesmo)</text>
+  <line x1="160" y1="216" x2="468" y2="216" stroke="#16a34a" stroke-width="2" marker-end="url(#ig)"/>
+  <line x1="160" y1="232" x2="468" y2="232" stroke="#16a34a" stroke-width="2" marker-end="url(#ig)"/>
+  <line x1="160" y1="248" x2="468" y2="248" stroke="#16a34a" stroke-width="2" marker-end="url(#ig)"/>
+  <text x="430" y="292" text-anchor="middle" fill="#16a34a" font-size="12.5" font-weight="700">sempre o MESMO recurso, mesmo estado → seguro repetir (retentativa)</text>
+</svg>
+
+<div class="dica">💡 <strong>Em miúdos:</strong> apertar o botão de <strong>chamar o elevador</strong> 3× não chama 3 elevadores (idempotente); <strong>enviar um formulário</strong> 3× cria 3 pedidos (não idempotente). Por isso só se pode <strong>repetir sozinho</strong> o que é idempotente.</div>
 
 ---
 
@@ -124,6 +183,38 @@ O REST organiza tudo em torno de **recursos** (substantivos → URLs): `/tarefas
 - Como **nasce do próprio código**, a documentação **não desatualiza** — o problema crônico da era SOAP, em que contrato e implementação viviam divergindo.
 
 <div class="dica">💡 Você escreve os tipos uma vez; o FastAPI valida a entrada, gera o <code>/docs</code> e mantém tudo em sincronia.</div>
+
+---
+
+## A documentação nasce do código
+
+<svg viewBox="0 0 860 300" role="img" style="width:100%;max-width:840px;display:block;margin:6px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs><marker id="dc" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#12437f"/></marker></defs>
+  <rect x="24" y="34" width="348" height="210" rx="12" fill="#0f172a"/>
+  <text x="44" y="60" fill="#94a3b8" font-size="12" font-weight="700" font-family="Consolas,monospace">seu código · app.py</text>
+  <text x="44" y="92" fill="#7dd3fc" font-size="13" font-family="Consolas,monospace">class Tarefa(BaseModel):</text>
+  <text x="64" y="114" fill="#e2e8f0" font-size="13" font-family="Consolas,monospace">titulo: str</text>
+  <text x="44" y="150" fill="#c4b5fd" font-size="13" font-family="Consolas,monospace">@app.post("/tarefas", 201)</text>
+  <text x="44" y="172" fill="#7dd3fc" font-size="13" font-family="Consolas,monospace">def criar(t: Tarefa):</text>
+  <text x="64" y="194" fill="#e2e8f0" font-size="13" font-family="Consolas,monospace">...</text>
+  <text x="44" y="226" fill="#94a3b8" font-size="11.5" font-family="Consolas,monospace">os TIPOS declarados ↑</text>
+  <line x1="378" y1="139" x2="470" y2="139" stroke="#12437f" stroke-width="2.5" marker-end="url(#dc)"/>
+  <text x="424" y="126" text-anchor="middle" fill="#0d2b57" font-size="12.5" font-weight="700">FastAPI</text>
+  <text x="424" y="160" text-anchor="middle" fill="#64748b" font-size="11">lê os tipos</text>
+  <rect x="480" y="34" width="356" height="210" rx="12" fill="#fff" stroke="#12437f" stroke-width="2"/>
+  <rect x="482" y="36" width="352" height="34" rx="10" fill="#12437f"/>
+  <text x="500" y="58" fill="#fff" font-size="13" font-weight="700">/docs · API de Tarefas</text>
+  <rect x="500" y="86" width="70" height="30" rx="6" fill="#12437f"/><text x="535" y="106" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">GET</text>
+  <text x="586" y="106" fill="#0d2b57" font-size="13" font-family="Consolas,monospace">/tarefas</text>
+  <rect x="500" y="126" width="70" height="30" rx="6" fill="#16a34a"/><text x="535" y="146" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">POST</text>
+  <text x="586" y="146" fill="#0d2b57" font-size="13" font-family="Consolas,monospace">/tarefas</text>
+  <rect x="500" y="166" width="70" height="30" rx="6" fill="#12437f"/><text x="535" y="186" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">GET</text>
+  <text x="586" y="186" fill="#0d2b57" font-size="13" font-family="Consolas,monospace">/tarefas/{tid}</text>
+  <rect x="700" y="206" width="120" height="28" rx="14" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="760" y="225" text-anchor="middle" fill="#12437f" font-size="11.5" font-weight="700">Try it out ▶</text>
+  <text x="430" y="284" text-anchor="middle" fill="#64748b" font-size="12.5">você não escreveu documentação — ela nasceu dos <tspan fill="#334155" font-weight="700">tipos</tspan>; muda o código → muda o /docs</text>
+</svg>
+
+<div class="dica">💡 <strong>Em miúdos:</strong> a bula já sai <strong>impressa do próprio remédio</strong>. Como o <code>/docs</code> vem dos tipos do código, ele <strong>nunca fica desatualizado</strong> — o velho problema do WSDL/SOAP, em que a doc vivia divergindo.</div>
 
 ---
 
