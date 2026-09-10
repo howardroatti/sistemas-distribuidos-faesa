@@ -76,6 +76,31 @@ Ao final, você será capaz de:
 
 ---
 
+## SOAP + WSDL — a geração anterior
+
+Para **buscar a tarefa 7**, o SOAP embrulha tudo em **XML**, sobre um único **POST**:
+
+```xml
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Body>
+    <getTarefa><id>7</id></getTarefa>
+  </soap:Body>
+</soap:Envelope>
+```
+
+E o **contrato** fica num arquivo **WSDL** (obrigatório), que descreve cada operação:
+
+```xml
+<operation name="getTarefa">
+  <input  message="getTarefaRequest"/>
+  <output message="getTarefaResponse"/>
+</operation>
+```
+
+<div class="dica">💡 O <strong>mesmo</strong> pedido, em REST, é uma linha: <code>GET /tarefas/7</code>. O SOAP põe a ação <em>dentro</em> do XML (o HTTP é só transporte) e <strong>exige o WSDL</strong>; o REST usa o <strong>próprio HTTP</strong> — verbo + URL + status.</div>
+
+---
+
 ## Conceito 2/3 — Recursos, verbos e status
 
 O REST organiza tudo em torno de **recursos** (substantivos → URLs): `/tarefas` (a coleção), `/tarefas/7` (um item).
@@ -87,7 +112,8 @@ O REST organiza tudo em torno de **recursos** (substantivos → URLs): `/tarefas
 **O verbo diz a ação**
 - **GET** — lê
 - **POST** — cria
-- **PUT** — atualiza
+- **PUT** — atualiza (todo)
+- **PATCH** — atualiza (em parte)
 - **DELETE** — remove
 
 </div>
@@ -130,6 +156,42 @@ O REST organiza tudo em torno de **recursos** (substantivos → URLs): `/tarefas
 </svg>
 
 <div class="dica">💡 <strong>Em miúdos:</strong> é como um balcão dos Correios: o <strong>verbo</strong> é o que você quer fazer (enviar, consultar), a <strong>URL</strong> é o balcão certo, o <strong>status</strong> é o carimbo de volta (deu certo · não achei · deu erro).</div>
+
+---
+
+## Os quatro verbos, no mesmo recurso
+
+<svg viewBox="0 0 880 280" role="img" style="width:100%;max-width:860px;display:block;margin:8px auto 0;font-family:'Segoe UI',Arial,sans-serif">
+  <defs><marker id="v4" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/></marker></defs>
+  <text x="20" y="24" fill="#0d2b57" font-size="12.5" font-weight="700">verbo · recurso · corpo</text>
+  <text x="620" y="24" fill="#0d2b57" font-size="12.5" font-weight="700">→ resposta · ação</text>
+  <rect x="20" y="38" width="96" height="32" rx="8" fill="#12437f"/><text x="68" y="60" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">GET</text>
+  <text x="126" y="59" fill="#0d2b57" font-size="14" font-family="Consolas,monospace">/tarefas/7</text>
+  <text x="300" y="59" fill="#94a3b8" font-size="12.5">(sem corpo)</text>
+  <line x1="500" y1="54" x2="536" y2="54" stroke="#94a3b8" stroke-width="2" marker-end="url(#v4)"/>
+  <rect x="544" y="38" width="150" height="32" rx="8" fill="#16a34a"/><text x="619" y="60" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">200 OK</text>
+  <text x="706" y="59" fill="#334155" font-size="12.5" font-weight="700">lê um item</text>
+  <rect x="20" y="94" width="96" height="32" rx="8" fill="#16a34a"/><text x="68" y="116" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">POST</text>
+  <text x="126" y="115" fill="#0d2b57" font-size="14" font-family="Consolas,monospace">/tarefas</text>
+  <rect x="296" y="97" width="150" height="26" rx="6" fill="#fff" stroke="#94a3b8" stroke-width="1.2"/><text x="306" y="115" fill="#334155" font-size="12" font-family="Consolas,monospace">{ titulo }</text>
+  <line x1="500" y1="110" x2="536" y2="110" stroke="#94a3b8" stroke-width="2" marker-end="url(#v4)"/>
+  <rect x="544" y="94" width="150" height="32" rx="8" fill="#16a34a"/><text x="619" y="116" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">201 Created</text>
+  <text x="706" y="115" fill="#334155" font-size="12.5" font-weight="700">cria</text>
+  <rect x="20" y="150" width="96" height="32" rx="8" fill="#e08a00"/><text x="68" y="172" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">PUT</text>
+  <text x="126" y="171" fill="#0d2b57" font-size="14" font-family="Consolas,monospace">/tarefas/7</text>
+  <rect x="296" y="153" width="150" height="26" rx="6" fill="#fff" stroke="#94a3b8" stroke-width="1.2"/><text x="306" y="171" fill="#334155" font-size="12" font-family="Consolas,monospace">{ titulo }</text>
+  <line x1="500" y1="166" x2="536" y2="166" stroke="#94a3b8" stroke-width="2" marker-end="url(#v4)"/>
+  <rect x="544" y="150" width="150" height="32" rx="8" fill="#16a34a"/><text x="619" y="172" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">200 OK</text>
+  <text x="706" y="171" fill="#334155" font-size="12.5" font-weight="700">substitui</text>
+  <rect x="20" y="206" width="96" height="32" rx="8" fill="#dc2626"/><text x="68" y="228" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">DELETE</text>
+  <text x="126" y="227" fill="#0d2b57" font-size="14" font-family="Consolas,monospace">/tarefas/7</text>
+  <text x="300" y="227" fill="#94a3b8" font-size="12.5">(sem corpo)</text>
+  <line x1="500" y1="222" x2="536" y2="222" stroke="#94a3b8" stroke-width="2" marker-end="url(#v4)"/>
+  <rect x="544" y="206" width="150" height="32" rx="8" fill="#475569"/><text x="619" y="228" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">204 No Content</text>
+  <text x="706" y="227" fill="#334155" font-size="12.5" font-weight="700">remove</text>
+</svg>
+
+<div class="dica">💡 O <strong>mesmo recurso</strong> (<code>/tarefas</code>), quatro ações — muda só o <strong>verbo</strong>. <strong>GET</strong> e <strong>DELETE</strong> não enviam corpo; <strong>POST</strong> e <strong>PUT</strong> mandam os dados. (O <strong>PATCH</strong> é como o PUT, mas altera <strong>só alguns campos</strong>.)</div>
 
 ---
 
