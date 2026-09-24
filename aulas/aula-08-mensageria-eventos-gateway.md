@@ -369,10 +369,13 @@ GET /resultado/{id}  →  fila.buscar_resultado(id)  →  {"status": "pronto", .
 ```
 
 ```powershell
-docker compose up -d           # sobe o Redis (agora sim, na VM)
+cd sd-2026-2-kit-c1a2          # a pasta do kit — é AQUI que está o docker-compose.yml
+docker compose up -d           # sobe o Redis (lê o docker-compose.yml deste diretório)
 uvicorn app.api_rest:app       # a API (POST /predict, GET /resultado)
 python -m app.worker           # o worker — suba VÁRIOS e veja dividir
 ```
+
+<div class="aviso">📁 O <code>docker-compose.yml</code> está na <strong>raiz do kit</strong> (<code>sd-2026-2-kit-c1a2/</code>, ao lado de <code>app/</code>) — rode o <code>docker compose</code> <strong>de dentro dessa pasta</strong>. Erro <em>"no configuration file provided"</em> = diretório errado.</div>
 
 <div class="dica">💡 São as <strong>TAREFAS 1, 2 e 3</strong> do C1.A2: <code>POST /predict</code> (enfileira), <code>GET /resultado/{id}</code> (consulta) e o worker <strong>gravar o resultado</strong>.</div>
 
