@@ -386,7 +386,9 @@ python fila_demo.py
 
 O passo a passo detalhado de cada missão — com **"Travou?"**, checklists e entregáveis — está no **guia à parte**:
 
-### 👉 <span style="color:#12437f">.../aulas/lab-08-missoes.html</span>
+### 👉 [Abrir o Guia do Laboratório »](lab-08-missoes.html)
+
+<span style="font-size:0.62em;color:#6b7280">no índice do site: Aula 8 → <strong>Guia do Lab</strong></span>
 
 <div class="cols">
 
