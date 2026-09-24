@@ -20,6 +20,8 @@ import time
 import requests
 
 BASE = "http://127.0.0.1:8000"
+MAX_ESPERA = 60          # segundos aguardando a fila drenar antes de desistir
+sessao = requests.Session()   # reaproveita a conexao (submissao mais rapida)
 
 
 def main(n: int) -> None:
@@ -28,7 +30,7 @@ def main(n: int) -> None:
     inicio = time.time()
     ids = []
     for texto in textos:
-        r = requests.post(f"{BASE}/predict", json={"texto": texto}, timeout=10)
+        r = sessao.post(f"{BASE}/predict", json={"texto": texto}, timeout=10)
         r.raise_for_status()
         ids.append(r.json()["id"])
     t_envio = time.time() - inicio
@@ -36,16 +38,22 @@ def main(n: int) -> None:
           f"({n / t_envio:.0f} req/s de submissao)")
 
     # espera a fila drenar: todos os resultados com status "pronto"
+    limite = time.time() + MAX_ESPERA
     prontos = 0
     while prontos < n:
         prontos = sum(
             1
             for tid in ids
-            if requests.get(f"{BASE}/resultado/{tid}", timeout=10).json()
+            if sessao.get(f"{BASE}/resultado/{tid}", timeout=10).json()
             .get("status") == "pronto"
         )
         print(f"\r[carga] prontos: {prontos}/{n}", end="", flush=True)
         if prontos < n:
+            if time.time() > limite:
+                print(f"\n[carga] ATENCAO: {n - prontos} tarefa(s) nao ficaram "
+                      f"prontas em {MAX_ESPERA}s. O worker esta rodando? "
+                      f"Veja a fila com: docker compose exec redis redis-cli LLEN tarefas")
+                sys.exit(1)
             time.sleep(0.5)
 
     total = time.time() - inicio
