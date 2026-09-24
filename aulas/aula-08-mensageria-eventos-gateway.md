@@ -382,68 +382,34 @@ python fila_demo.py
 
 ---
 
-## Missão 1 — construa a fila: o alvo (TAREFAS 1+2+3)
+## Mão na massa — siga o Guia do Laboratório
 
-No kit, o assíncrono **ainda não existe** — é o seu trabalho. Pronto mesmo, só o `/predict-sync` (Aula 6). Os auxiliares `app/fila.py` já existem; ligue-os:
+O passo a passo detalhado de cada missão — com **"Travou?"**, checklists e entregáveis — está no **guia à parte**:
 
-```text
-POST /predict  →  fila.enfileirar(texto)  →  devolve {"id": ...}   (não espera!)
-                        │  (Redis)
-worker  →  fila.proxima_tarefa()  →  modelo.prever()  →  fila.guardar_resultado(id, ...)
-GET /resultado/{id}  →  fila.buscar_resultado(id)  →  {"status": "pronto", ...}
-```
+### 👉 <span style="color:#12437f">.../aulas/lab-08-missoes.html</span>
 
-- **TAREFA 1** — `POST /predict` → `fila.enfileirar` (status 202, devolve o `id`).
-- **TAREFA 2** — `GET /resultado/{id}` → `fila.buscar_resultado` (404 se não existir).
-- **TAREFA 3** — no worker: `fila.guardar_resultado(id, resultado)` ao terminar.
+<div class="cols">
 
----
+<div>
 
-## Missão 1 — suba e valide
+**Entregáveis das missões**
+1. Fila funcionando (TAREFAS 1+2+3): `id` → `pronto`.
+2. Tabela de vazão (1/3/6 workers).
+3. Worker com retentativa + dead-letter.
+4. C2.A2 com a ingestão no ar.
 
-```powershell
-cd sd-2026-2-kit-c1a2          # aqui está o docker-compose.yml
-docker compose up -d           # sobe o Redis
-uvicorn app.api_rest:app --reload --port 8000   # a API — terminal 2 (.venv ativo)
-python -m app.worker           # o worker — terminal 3 (.venv ativo); suba VÁRIOS
-```
+</div>
 
-<div class="aviso">📁 Rode o <code>docker compose</code> da <strong>raiz do kit</strong> (onde está o <code>docker-compose.yml</code>). Erro <em>"no configuration file provided"</em> = pasta errada.</div>
+<div>
 
-<div class="dica">✅ <strong>Entregável:</strong> um <code>POST /predict</code> no <code>/docs</code> devolve um <code>id</code> e o <code>GET /resultado/{id}</code> retorna <code>status: "pronto"</code>.</div>
+**Pode usar ajuda — com registro**
+Documentação, colega ou **IA**: liberado. A regra é **rastrear**: anote no `PROMPTS.md` o que perguntou e o que **você** fez com a resposta.
 
----
+</div>
 
-## Missão 2 — Redis por dentro + meça a escala
+</div>
 
-**Veja a fila de verdade** (outro terminal):
-
-```powershell
-docker compose exec redis redis-cli
-> MONITOR              # dispare um POST e veja RPUSH tarefas / SET resultado:...
-> LLEN tarefas         # quantas tarefas esperando na fila
-> KEYS resultado:*     # os resultados guardados
-```
-
-**Meça a vazão** com `carga.py`, repetindo com **1, 3 e 6 workers**:
-
-```powershell
-python exemplos/aula08/carga.py 50
-```
-
-<div class="aviso">📊 <strong>Entregável:</strong> preencha a tabela <strong>workers × tempo × tarefas/s</strong> (1, 3, 6). Onde a vazão para de crescer? É o seu ponto de <strong>saturação</strong> — o gargalo virou a CPU/o modelo.</div>
-
----
-
-## Missão 3 — quebre e observe (resiliência)
-
-Com a carga rodando, provoque falhas e veja o sistema reagir:
-
-- **Derrube o worker** (Ctrl+C) no meio da carga → `LLEN tarefas` **cresce**: a fila **segura** o trabalho. Suba de novo → **drena**.
-- **Derrube o Redis** (`docker compose stop redis`) → o `POST /predict` **falha** ao enfileirar: sem fila, não há assíncrono.
-- **Dead-letter (TAREFA 5):** faça o worker **reprocessar** e, após N falhas, mandar a mensagem para uma lista `dead_letter` — como no `fila_demo.py`.
-
-<div class="aviso">⚠️ Anote <strong>quem sobrevive à queda de quem</strong>: a fila protege contra picos e queda do worker; mas o Redis vira um <strong>ponto único</strong> — gancho para a <strong>Aula 10 (CAP)</strong>.</div>
+<div class="aviso">🧭 Travou numa missão? O guia tem uma caixa <strong>"Travou?"</strong> em cada uma — onde pesquisar e um exemplo de prompt de IA para registrar.</div>
 
 ---
 
@@ -459,25 +425,14 @@ Começa o **C2.A2**: um **RAG** (busca + geração) dividido em **microsserviço
 
 ---
 
-## Desafios — para quem voar 🚀
-
-Terminou as missões? Escolha um (vira ponto forte no C1.A2/C2.A2):
-
-- **Pub/sub na unha:** em 2 terminais `docker compose exec redis redis-cli` → `SUBSCRIBE avisos`; num 3º → `PUBLISH avisos "pronto"`. **Todos** recebem — na fila, só um pegava. É a diferença fila × pub/sub, na mão.
-- **Latência p50/p95:** meça o tempo de cada `GET /resultado/{id}` e calcule os percentis (não só a média).
-- **Gateway mínimo:** um FastAPI que roteia `/infer` → serviço, com um contador de **rate limit** e um header de **auth** fake — ponte para a segurança (C3).
-
-<div class="dica">💡 O pub/sub é o Conceito 3 saindo do slide: <code>PUBLISH</code>/<code>SUBSCRIBE</code> entregam a mesma mensagem a <strong>todos</strong>; a fila (<code>RPUSH</code>/<code>BLPOP</code>) entrega a <strong>um</strong>.</div>
-
----
-
 ## Atividade para casa
 
-1. **Finalize o que não deu em sala:** TAREFAS 1-3 (a fila) e, se faltou, a **TAREFA 5** (retentativa + dead-letter).
-2. **Registre a medição:** salve no repositório a **tabela de vazão** (1/3/6 workers) da Missão 2.
+1. **Finalize as missões:** TAREFAS 1-3 (a fila) e a **TAREFA 5** (retentativa + dead-letter).
+2. **Registre a medição:** salve a **tabela de vazão** (1/3/6 workers) da Missão 2 no repositório.
 3. **Siga o C2.A2:** com a ingestão no ar, avance a **TAREFA 4** (mensageria do RAG).
+4. **Preencha o `PROMPTS.md`:** as ajudas (docs / IA / colega) que você usou — vale como evidência.
 
-<div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> worker completo (retentativa + dead-letter) + a <strong>tabela de vazão</strong> + repositório do <strong>C2.A2</strong> com a ingestão iniciada.</div>
+<div class="aviso">📌 <strong>Entregar até a próxima aula:</strong> worker completo (retentativa + dead-letter) + a <strong>tabela de vazão</strong> + o <code>PROMPTS.md</code> + repositório do <strong>C2.A2</strong> com a ingestão iniciada. Roteiro completo no <strong>Guia do Laboratório</strong> (link no slide anterior).</div>
 
 ---
 

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 8 · Mensageria · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 8</h1>
+  <p>Mensageria, filas e workers · O serviço de IA assíncrono, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-08-mensageria-eventos-gateway.html">← Slides da Aula 8</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong> em sequência. Cada uma tem um <strong>objetivo</strong>, um <strong>passo a passo</strong>, um <strong>checklist</strong> e um <strong>entregável</strong>. Vá no seu ritmo: terminou antes? Há <strong>Desafios</strong> no fim. O código roda no seu computador (Windows do lab ou a VM) — nada é enviado para fora.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Construir a fila</a></li>
+      <li><a href="#m2">Missão 2 — Redis por dentro + medir</a></li>
+      <li><a href="#m3">Missão 3 — Quebrar (resiliência)</a></li>
+      <li><a href="#m4">Missão 4 — Lançar o C2.A2</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p><strong>Você vai transformar</strong> o serviço síncrono da Aula 6 em um <strong>pipeline assíncrono</strong>: quem pede não espera — entrega a tarefa, recebe um <code>id</code> e busca o resultado depois. A peça nova é a <strong>fila (Redis)</strong> com um <strong>worker</strong> processando em segundo plano.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Kit da C1 clonado:</strong> <code>git clone https://github.com/howardroatti/sd-2026-2-kit-c1a2.git</code></li>
+    <li><strong>Ambiente Python (venv) ativo</strong> dentro do kit e dependências instaladas (<code>pip install -r requirements.txt</code>). Se a ativação do venv barrar no PowerShell com <em>"running scripts is disabled"</em>, rode uma vez: <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> (responda <kbd>S</kbd>).</li>
+    <li><strong>Docker</strong> funcionando (para subir o Redis).</li>
+    <li>Você vai precisar de <strong>3 a 4 terminais</strong> abertos (Redis, API, worker(s), e um para comandos).</li>
+  </ul>
+
+  <div class="box dica">
+    <p><span class="rot">💡 O ponto de partida.</span> No kit, o assíncrono <strong>ainda não existe</strong>: as rotas <code>POST /predict</code> e <code>GET /resultado/{id}</code> e o "guardar resultado" do worker vêm como <strong>TAREFAS</strong> (trechos comentados que levantam <code>NotImplementedError</code>). Os auxiliares de fila (<code>app/fila.py</code>) já estão <strong>prontos</strong> — você só precisa ligá-los. Tudo está descrito no <code>TAREFAS.md</code> do kit.</p>
+  </div>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Travar faz parte. Você <strong>pode e deve</strong> buscar ajuda: documentação oficial, colegas, e também uma <strong>IA (LLM)</strong>. A única exigência é <strong>rastreabilidade</strong>: registre o que você usou. Isso vale nota como <strong>evidência de processo</strong> e treina uma competência real de engenharia — usar ferramentas <em>com</em> discernimento.</p>
+
+  <div class="box aviso">
+    <p><span class="rot">📒 Obrigatório — arquivo <code>PROMPTS.md</code> no seu repositório.</span> Sempre que uma fonte externa (docs, vídeo, colega) ou uma IA te ajudar, anote. O que <strong>não</strong> vale: colar código que você não entende. O que vale: usar a ajuda para <strong>entender</strong> e então escrever/ajustar você mesmo.</p>
+  </div>
+
+  <h3>Modelo do <code>PROMPTS.md</code> (copie e preencha)</h3>
+<pre><code>## Missão 1 — TAREFA 1 (POST /predict)
+- Fonte: ChatGPT / Claude / docs FastAPI / colega
+- O que perguntei: "&lt;seu prompt exato&gt;"
+- Resposta (resumo em 2-3 linhas): &lt;...&gt;
+- O que EU fiz com isso: &lt;o que entendi, o que escrevi, o que mudei e por quê&gt;
+
+## Missão 2 — medição
+- Fonte: ...
+- O que perguntei: "..."
+- ...
+</code></pre>
+  <div class="box dica">
+    <p><span class="rot">💡 Dica de bom prompt.</span> Em vez de "me dá o código da rota", peça <strong>entendimento</strong>: <em>"Explique, sem me dar o código pronto, como o FastAPI define o status 202 numa rota POST e por que um endpoint assíncrono deve responder rápido."</em> Você aprende mais e o registro fica honesto.</p>
+  </div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Construir a fila <span class="tag">construir</span> <span class="tempo">~25 min</span></h2>
+  <p><strong>Objetivo:</strong> fazer o pipeline assíncrono funcionar de ponta a ponta — <code>POST /predict</code> enfileira e devolve um <code>id</code>; um <strong>worker</strong> processa; <code>GET /resultado/{id}</code> devolve o resultado pronto.</p>
+
+  <h3>Passo 1 — suba o Redis e a API</h3>
+<pre><code>cd sd-2026-2-kit-c1a2          <span class="c"># aqui está o docker-compose.yml</span>
+docker compose up -d           <span class="c"># sobe o Redis em segundo plano</span>
+docker compose ps              <span class="c"># confira: o serviço redis deve estar "running/healthy"</span>
+
+<span class="c"># terminal 2 (com o .venv ativo):</span>
+uvicorn app.api_rest:app --reload --port 8000     <span class="c"># abra http://127.0.0.1:8000/docs</span></code></pre>
+  <div class="box aviso"><p><span class="rot">📁 Diretório certo.</span> O <code>docker compose</code> precisa rodar na <strong>raiz do kit</strong> (onde está o <code>docker-compose.yml</code>). Erro <em>"no configuration file provided"</em> = você está na pasta errada.</p></div>
+
+  <h3>Passo 2 — implemente as 3 TAREFAS</h3>
+  <p>Abra os arquivos, ache os blocos marcados como TAREFA (comentados) e implemente. Você <strong>não</strong> mexe no Redis diretamente — usa os auxiliares prontos de <code>app/fila.py</code>.</p>
+  <ul>
+    <li><strong>TAREFA 1</strong> — em <code>app/api_rest.py</code>: rota <code>POST /predict</code> que recebe <code>{texto}</code>, chama <code>fila.enfileirar(texto)</code> e devolve <code>{"id": ...}</code> com <strong>status 202</strong> (não espera o processamento).</li>
+    <li><strong>TAREFA 2</strong> — em <code>app/api_rest.py</code>: rota <code>GET /resultado/{id}</code> que chama <code>fila.buscar_resultado(id)</code>; se não existir, responde <strong>404</strong>.</li>
+    <li><strong>TAREFA 3</strong> — em <code>app/worker.py</code>: depois de <code>modelo.prever(...)</code>, chame <code>fila.guardar_resultado(tarefa["id"], resultado)</code> (e remova o <code>raise NotImplementedError</code>).</li>
+  </ul>
+
+  <h3>Passo 3 — suba o worker e valide</h3>
+<pre><code><span class="c"># terminal 3 (com o .venv ativo):</span>
+python -m app.worker           <span class="c"># deve imprimir "carregando modelo..." e "aguardando tarefas"</span></code></pre>
+  <p>No <code>/docs</code> (Swagger), teste o fluxo: <code>POST /predict</code> com um texto → copie o <code>id</code> → <code>GET /resultado/{id}</code> → o <code>status</code> deve virar <code>"pronto"</code>.</p>
+
+  <ul class="check">
+    <li><code>docker compose ps</code> mostra o Redis no ar</li>
+    <li><code>/docs</code> abre e mostra as rotas <code>/predict</code> e <code>/resultado/{id}</code></li>
+    <li><code>POST /predict</code> devolve um <code>id</code> na hora (status 202)</li>
+    <li>o worker imprime "processando &lt;id&gt;"</li>
+    <li><code>GET /resultado/{id}</code> retorna <code>status: "pronto"</code></li>
+  </ul>
+
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Pesquise:</p>
+    <ul>
+      <li>FastAPI — <a href="https://fastapi.tiangolo.com/tutorial/body/" target="_blank">Request Body</a>, <a href="https://fastapi.tiangolo.com/tutorial/response-status-code/" target="_blank">Status Code</a>, <a href="https://fastapi.tiangolo.com/tutorial/path-params/" target="_blank">Path Parameters</a>, <a href="https://fastapi.tiangolo.com/tutorial/handling-errors/" target="_blank">Erros/404</a>.</li>
+      <li>Leia o <code>TAREFAS.md</code> do kit e as <em>DICAS</em> comentadas nos próprios arquivos.</li>
+      <li><strong>IA (registre no <code>PROMPTS.md</code>):</strong> <em>"No FastAPI, como declaro <code>status_code=202</code> numa rota POST e como leio um parâmetro de caminho <code>{id}</code>? Explique o conceito, não me dê a solução pronta."</em></li>
+    </ul>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Pipeline assíncrono funcionando: um <code>POST /predict</code> vira um <code>id</code> e o <code>GET /resultado/{id}</code> retorna <code>pronto</code>. Faça <code>commit</code> das TAREFAS 1, 2 e 3.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Redis por dentro + meça a escala <span class="tag">medir</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> deixar de tratar o Redis como caixa-preta (ver a fila de verdade) e <strong>medir</strong> o efeito de adicionar workers.</p>
+
+  <h3>Passo 1 — espie a fila</h3>
+<pre><code>docker compose exec redis redis-cli    <span class="c"># abre o cliente do Redis</span>
+&gt; MONITOR            <span class="c"># dispare um POST noutro terminal e veja RPUSH tarefas / SET resultado:...</span>
+&gt; LLEN tarefas       <span class="c"># quantas tarefas estão esperando na fila</span>
+&gt; LRANGE tarefas 0 -1 <span class="c"># o conteúdo da fila</span>
+&gt; KEYS resultado:*   <span class="c"># os resultados já guardados</span>
+&gt; GET resultado:&lt;id&gt; <span class="c"># o resultado de uma tarefa</span></code></pre>
+  <p>Saia do <code>MONITOR</code> com <kbd>Ctrl</kbd>+<kbd>C</kbd> e do cliente com <code>exit</code>.</p>
+
+  <h3>Passo 2 — meça a vazão variando os workers</h3>
+  <p>Com a API no ar, suba <strong>1 worker</strong> e rode a carga. Depois repita com <strong>3</strong> e <strong>6</strong> workers (cada worker no seu terminal), sempre anotando o tempo.</p>
+<pre><code>python exemplos/aula08/carga.py 50     <span class="c"># dispara 50 tarefas e cronometra até todas ficarem prontas</span></code></pre>
+  <table>
+    <tr><th>nº de workers</th><th>tempo total (s)</th><th>tarefas/s</th></tr>
+    <tr><td>1</td><td>?</td><td>?</td></tr>
+    <tr><td>3</td><td>?</td><td>?</td></tr>
+    <tr><td>6</td><td>?</td><td>?</td></tr>
+  </table>
+  <div class="box dica"><p><span class="rot">💡 Reflita.</span> Dobrar os workers <strong>não</strong> dobra a vazão para sempre. Em algum ponto o gargalo deixa de ser "quantos processam" e vira a <strong>CPU / o modelo</strong>. Onde a sua curva parou de crescer? Esse é o seu ponto de <strong>saturação</strong>.</p></div>
+
+  <ul class="check">
+    <li>vi no <code>MONITOR</code> os comandos <code>RPUSH tarefas</code> e <code>SET resultado:...</code></li>
+    <li>rodei <code>carga.py</code> com 1, 3 e 6 workers</li>
+    <li>preenchi a tabela e identifiquei o ponto de saturação</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Referências: <a href="https://redis.io/docs/latest/commands/lrange/" target="_blank">comandos de lista do Redis</a> (LLEN, LRANGE); medir tempo em Python com <code>time.perf_counter()</code>. <strong>IA (registre):</strong> <em>"Como interpretar uma curva de vazão que cresce e depois estabiliza ao aumentar o número de workers? O que é ponto de saturação?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> A <strong>tabela de vazão</strong> (1/3/6 workers) salva no repositório, por exemplo num <code>relatorio.md</code>.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Quebrar e observar <span class="tag">resiliência</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> sentir na prática a <strong>falha parcial</strong> e a <strong>durabilidade</strong> — o que a fila protege e o que ela não protege.</p>
+
+  <h3>Experimentos</h3>
+  <ol>
+    <li><strong>Derrube o worker</strong> (<kbd>Ctrl</kbd>+<kbd>C</kbd>) no meio de uma carga. Rode <code>LLEN tarefas</code>: o número <strong>cresce</strong> — a fila <strong>segura</strong> o trabalho. Suba o worker de novo e veja a fila <strong>drenar</strong>.</li>
+    <li><strong>Derrube o Redis:</strong> <code>docker compose stop redis</code>. Agora um <code>POST /predict</code> <strong>falha</strong> ao tentar enfileirar — sem fila, não há assíncrono. Religue: <code>docker compose start redis</code>.</li>
+    <li><strong>Dead-letter (TAREFA 5):</strong> faça o worker, ao dar erro numa tarefa, <strong>reprocessar</strong> até N vezes e, persistindo a falha, mandar a mensagem para uma lista <code>dead_letter</code> — igual ao <code>fila_demo.py</code> do aquecimento.</li>
+  </ol>
+  <div class="box dica"><p><span class="rot">💡 Como provocar um erro de propósito.</span> O modelo quase nunca falha sozinho. Para testar a dead-letter, trate um texto especial como falha no worker (ex.: se o texto for <code>"ENVENENADA"</code>, <code>raise</code>) — exatamente a técnica do <code>fila_demo.py</code>.</p></div>
+
+  <ul class="check">
+    <li>vi a fila crescer com o worker derrubado e drenar ao voltar</li>
+    <li>vi o <code>POST /predict</code> falhar com o Redis parado</li>
+    <li>implementei retentativa + <code>dead_letter</code> no worker (TAREFA 5)</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Revisite o <code>fila_demo.py</code> (aquecimento) — a lógica de retentativa e dead-letter está toda lá, em memória. Você vai portá-la para o worker do kit usando o cliente do Redis. <strong>IA (registre):</strong> <em>"Explique o padrão retry + dead-letter queue e como eu contaria as tentativas de uma mensagem antes de descartá-la."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Worker com <strong>retentativa + dead-letter</strong> e uma anotação curta: <em>quem sobrevive à queda de quem?</em> (a fila protege contra picos e contra a queda do worker; o Redis, porém, é um ponto único — gancho para a <strong>Aula 10, CAP</strong>).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Lance o C2.A2 <span class="tag">entregar</span> <span class="tempo">~10 min</span></h2>
+  <p><strong>Objetivo:</strong> começar o próximo trabalho avaliado em sala, com o professor por perto. O C2.A2 é um <strong>RAG distribuído em microsserviços</strong> (ingestão, recuperação, geração) — e a <strong>mensageria de hoje é a espinha dele</strong>.</p>
+  <ol>
+    <li><strong>Clone</strong> o kit novo: <code>git clone https://github.com/howardroatti/sd-2026-2-kit-c2a2.git</code></li>
+    <li><strong>Leia o <code>README.md</code></strong> do kit e monte o ambiente (venv + dependências), como você já fez na C1.</li>
+    <li><strong>Suba o serviço de ingestão</strong> e enfileire ao menos <strong>um documento</strong> pelo fluxo de mensageria (<strong>TAREFA 4</strong>).</li>
+  </ol>
+  <ul class="check">
+    <li>kit C2.A2 clonado e ambiente montado</li>
+    <li>serviço de ingestão no ar</li>
+    <li>um documento passou pela fila</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Repositório do <strong>C2.A2</strong> com a ingestão iniciada (o resto segue como atividade da próxima etapa).</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <p>Terminou as missões? Escolha um. Cada um vira um <strong>ponto forte</strong> no C1.A2/C2.A2 (e ótimo para o ENADE):</p>
+  <ul>
+    <li><strong>Pub/sub na unha:</strong> em 2 terminais abra <code>docker compose exec redis redis-cli</code> e rode <code>SUBSCRIBE avisos</code>; num 3º, <code>PUBLISH avisos "pronto"</code>. <strong>Todos</strong> os assinantes recebem — na fila (<code>RPUSH</code>/<code>BLPOP</code>), só <strong>um</strong> pegava. É a diferença fila × pub/sub, na mão.</li>
+    <li><strong>Latência p50/p95:</strong> meça o tempo de cada <code>GET /resultado/{id}</code> e calcule os <strong>percentis</strong> (não só a média). Por que a média engana?</li>
+    <li><strong>Gateway mínimo:</strong> um FastAPI que roteia <code>/infer</code> → serviço, com um contador de <strong>rate limit</strong> e um header de <strong>auth</strong> fake. É a ponte para a segurança (C3).</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> pipeline assíncrono funcionando (id → pronto), TAREFAS 1-3 commitadas</li>
+    <li><strong>Missão 2:</strong> tabela de vazão (1/3/6 workers) no repositório</li>
+    <li><strong>Missão 3:</strong> worker com retentativa + dead-letter (TAREFA 5)</li>
+    <li><strong>Missão 4:</strong> C2.A2 clonado com ingestão iniciada</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido com as ajudas (docs/IA/colega) que você usou</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a próxima aula.</span> Worker completo (retentativa + dead-letter) · a tabela de vazão · o <code>PROMPTS.md</code> · e o repositório do <strong>C2.A2</strong> com a ingestão iniciada.</p></div>
+
+  <footer>
+    <a href="aula-08-mensageria-eventos-gateway.html">← Slides da Aula 8</a>
+    <a href="../index.html">☰ Índice</a>
+    <a href="https://github.com/howardroatti/sd-2026-2-kit-c1a2" target="_blank">Kit C1.A2</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
