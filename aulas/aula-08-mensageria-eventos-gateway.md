@@ -177,7 +177,7 @@ Precisa de mais vazão? **Suba mais workers** consumindo a mesma fila — **sem 
 
 ---
 
-## Conceito 2/4 — Quando o processamento falha: dead-letter
+## Conceito 2/4 (cont.) — quando o processamento falha: dead-letter
 
 - Uma tarefa pode dar **erro** (entrada inválida, dependência fora do ar). O que fazer?
 - **Boa prática:** **reprocessar** algumas vezes; **persistindo** a falha, encaminhar a mensagem para uma **fila de descarte** — a **dead-letter**.
@@ -334,7 +334,8 @@ def worker(nome):
             if tarefa["tentativas"] < 3: fila.put(tarefa)   # RETENTATIVA
             else: dead_letter.append(tarefa)                # DEAD-LETTER
 
-for i in range(9): fila.put({"id": i, "tentativas": 0})     # o PRODUTOR
+for i in range(8): fila.put({"id": i, "tentativas": 0})     # 8 tarefas boas (o PRODUTOR)
+fila.put({"id": 99, "tentativas": 0, "ruim": True})     # + 1 "envenenada" (falha sempre)
 # 3 WORKERS dividem a carga (escalar = + workers na MESMA fila):
 [threading.Thread(target=worker, args=(f"w{i}",), daemon=True).start() for i in range(3)]
 ```
@@ -371,8 +372,8 @@ GET /resultado/{id}  →  fila.buscar_resultado(id)  →  {"status": "pronto", .
 ```powershell
 cd sd-2026-2-kit-c1a2          # a pasta do kit — é AQUI que está o docker-compose.yml
 docker compose up -d           # sobe o Redis (lê o docker-compose.yml deste diretório)
-uvicorn app.api_rest:app       # a API (POST /predict, GET /resultado)
-python -m app.worker           # o worker — suba VÁRIOS e veja dividir
+uvicorn app.api_rest:app       # a API — em OUTRO terminal, com o .venv ativo
+python -m app.worker           # o worker — em OUTRO terminal; suba VÁRIOS e veja dividir
 ```
 
 <div class="aviso">📁 O <code>docker-compose.yml</code> está na <strong>raiz do kit</strong> (<code>sd-2026-2-kit-c1a2/</code>, ao lado de <code>app/</code>) — rode o <code>docker compose</code> <strong>de dentro dessa pasta</strong>. Erro <em>"no configuration file provided"</em> = diretório errado.</div>
