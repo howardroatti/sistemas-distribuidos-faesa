@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 14 · Orquestração e serverless · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 14</h1>
+  <p>Orquestração, serverless e borda · A stack com um comando, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-14-orquestracao-serverless-edge.html">← Slides da Aula 14</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong>: subir a stack com um comando, <strong>escalar</strong> um serviço, publicar uma <strong>função serverless</strong> (com 3 medições) e <strong>compor o C3.A2</strong>.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — A stack com um comando</a></li>
+      <li><a href="#m2">Missão 2 — Escalar um serviço</a></li>
+      <li><a href="#m3">Missão 3 — Publicar uma função serverless (3 medições)</a></li>
+      <li><a href="#m4">Missão 4 — Compor a stack do C3.A2</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>Você tem containers soltos; hoje eles viram um <strong>sistema</strong>. O <code>docker-compose.yml</code> descreve a stack e sobe tudo com um comando; os serviços se acham pelo <strong>nome</strong> na rede interna.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Docker</strong> com o daemon rodando e o <strong>Docker Compose</strong> (já vem no Docker Desktop).</li>
+    <li>O exemplo da aula: <code>aulas/exemplos/aula14/</code> (<code>gateway/</code>, <code>inferencia/</code>, <code>docker-compose.yml</code>, <code>funcao/handler.py</code>).</li>
+    <li>Para a Missão 3: uma conta grátis de nuvem com funções (ex.: <strong>AWS Lambda</strong>, <strong>Google Cloud Functions</strong>) ou o modo de função do Render.</li>
+  </ul>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Pode usar docs, colegas e IA; registre no <code>PROMPTS.md</code> o que usou e <strong>o que fez</strong> com a resposta.</p>
+  <div class="box aviso"><p><span class="rot">📒 Obrigatório — <code>PROMPTS.md</code>.</span> Fonte · pergunta · resumo · o que você fez. Não vale colar o que não entende.</p></div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — A stack com um comando <span class="tag">orquestrar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> subir <strong>gateway + inferência</strong> juntos e ver o gateway encontrar a inferência <strong>pelo nome</strong>.</p>
+<pre><code>cd exemplos/aula14
+docker compose up --build        <span class="c"># sobe os dois servicos</span>
+<span class="c"># noutro terminal:</span>
+curl -X POST localhost:8000/infer -H "Content-Type: application/json" -d "{\"texto\":\"gostei, otimo servico\"}"
+<span class="c"># {"via":"gateway","resultado":{"sentimento":"positivo","host":"&lt;id&gt;"}}</span></code></pre>
+  <p>Repare: só o <strong>gateway</strong> tem porta publicada (8000). A inferência é interna — tente acessá-la direto e veja que não dá.</p>
+  <ul class="check">
+    <li><code>docker compose up</code> subiu os dois serviços</li>
+    <li><code>/infer</code> no gateway respondeu com o resultado da inferência</li>
+    <li>confirmei que a inferência <strong>não</strong> é acessível de fora</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> <em>"no configuration file provided"</em> = rode na pasta do <code>docker-compose.yml</code>. Gateway responde 502? a inferência ainda está subindo — aguarde. <strong>IA (registre):</strong> <em>"Como os serviços de um docker-compose se encontram pelo nome? O que e a rede padrao do compose?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> A stack subindo com um comando (print do <code>/infer</code> funcionando).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Escalar um serviço <span class="tag">escalar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> ver a <strong>elasticidade</strong> na prática — mais réplicas, respostas vindas de hosts diferentes.</p>
+<pre><code>docker compose up --scale inferencia=3     <span class="c"># 3 replicas do servico interno</span>
+<span class="c"># dispare varios /infer e observe o campo "host" mudando entre as respostas</span>
+for /l %i in (1,1,6) do curl -s -X POST localhost:8000/infer -H "Content-Type: application/json" -d "{\"texto\":\"teste\"}"</code></pre>
+  <ul class="check">
+    <li>subi 3 réplicas da inferência</li>
+    <li>vi o campo <code>host</code> variar entre as respostas (balanceamento)</li>
+    <li>anotei: o que acontece com <code>--scale inferencia=1</code> de novo?</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> O <code>host</code> não muda? Dispare mais requisições (o balanceamento é por conexão). <strong>IA (registre):</strong> <em>"Por que escalar horizontalmente (mais replicas) ajuda sob carga, e quando isso para de ajudar?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Evidência (print/saída) das respostas vindas de <strong>hosts diferentes</strong> ao escalar.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Publicar uma função serverless (3 medições) <span class="tag">serverless</span> <span class="tempo">~25 min</span></h2>
+  <p><strong>Objetivo:</strong> entregar <strong>só uma função</strong> e medir o <strong>cold start</strong> na prática.</p>
+  <ol>
+    <li>Use o <code>funcao/handler.py</code> como base. Rode local: <code>python funcao/handler.py</code>.</li>
+    <li>Publique a função numa plataforma FaaS (AWS Lambda / Cloud Functions / Render Functions) — adapte a assinatura do handler ao formato da plataforma.</li>
+    <li>Meça o tempo de resposta <strong>três vezes</strong>: a <strong>1ª após ficar ociosa</strong> (cold start), e mais duas <strong>seguidas</strong> (quente).</li>
+  </ol>
+  <table>
+    <tr><th>invocação</th><th>situação</th><th>tempo (ms)</th></tr>
+    <tr><td>1ª</td><td>cold start (após ociosidade)</td><td>?</td></tr>
+    <tr><td>2ª</td><td>quente</td><td>?</td></tr>
+    <tr><td>3ª</td><td>quente</td><td>?</td></tr>
+  </table>
+  <ul class="check">
+    <li>função publicada numa plataforma serverless</li>
+    <li>as 3 medições preenchidas</li>
+    <li>a 1ª (cold) é visivelmente maior que as quentes</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Cada provedor tem um formato de handler. <strong>IA (registre):</strong> <em>"Qual a assinatura de um handler no AWS Lambda (ou Cloud Functions) em Python e como ele recebe o event?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> A função no ar + a <strong>tabela das 3 medições</strong> no repositório.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Compor a stack do C3.A2 <span class="tag">entregar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> subir o projeto <strong>inteiro</strong> com um comando e integrar o componente serverless/edge.</p>
+  <ol>
+    <li>Escreva o <code>docker-compose.yml</code> do <strong>C3.A2</strong> (gateway + inferência + worker + armazenamento vetorial). Só o gateway expõe porta.</li>
+    <li><code>docker compose up</code>: o projeto sobe inteiro com um comando.</li>
+    <li>Integre o componente <strong>serverless/edge</strong> ao fluxo (ex.: um pré-processamento ou webhook).</li>
+  </ol>
+  <ul class="check">
+    <li>projeto C3.A2 sobe com <code>docker compose up</code></li>
+    <li>só o gateway é exposto; os demais são internos</li>
+    <li>componente serverless/edge integrado</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> O <code>docker-compose.yml</code> do C3.A2 subindo o projeto inteiro + o componente serverless integrado.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <ul>
+    <li><strong>Health check no compose:</strong> adicione <code>healthcheck</code> ao serviço de inferência e faça o gateway só subir quando ela estiver <em>healthy</em> (<code>depends_on: condition: service_healthy</code>).</li>
+    <li><strong>Variáveis por ambiente:</strong> mova o <code>INFER_URL</code> e outras configs para um arquivo <code>.env</code> lido pelo compose.</li>
+    <li><strong>Edge de verdade:</strong> sirva um arquivo estático por uma CDN (ex.: Cloudflare Pages) e meça a latência comparada ao seu serviço de origem.</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> stack subindo com um comando (gateway → inferência)</li>
+    <li><strong>Missão 2:</strong> escala com <code>--scale</code>, hosts diferentes respondendo</li>
+    <li><strong>Missão 3:</strong> função serverless publicada + tabela das 3 medições</li>
+    <li><strong>Missão 4:</strong> C3.A2 subindo inteiro + componente serverless/edge</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a próxima aula.</span> O projeto subindo com um comando · a função serverless com as <strong>3 medições</strong> · o <code>PROMPTS.md</code>.</p></div>
+
+  <footer>
+    <a href="aula-14-orquestracao-serverless-edge.html">← Slides da Aula 14</a>
+    <a href="../index.html">☰ Índice</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Aula 14 - orquestracao: sobe a STACK INTEIRA com um comando.
+#   docker compose up --build        (sobe gateway + inferencia)
+#   docker compose up --scale inferencia=3   (3 replicas do servico interno)
+#   docker compose down              (derruba tudo)
+#
+# So o GATEWAY expoe porta para fora (8000). O servico de inferencia e interno:
+# o gateway o encontra pelo NOME do servico na rede do compose (http://inferencia:8000).
+
+services:
+  inferencia:
+    build: ./inferencia
+    # sem 'ports': nao e acessivel de fora, so pelos outros servicos da stack
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - INFER_URL=http://inferencia:8000
+    depends_on:
+      - inferencia
