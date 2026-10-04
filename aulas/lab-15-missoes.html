@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 15 · Observabilidade · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 15</h1>
+  <p>Observabilidade · Rastrear uma requisição e achar o gargalo, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-15-observabilidade.html">← Slides da Aula 15</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong>: entender o trace no aquecimento, <strong>instrumentar</strong> o fluxo com OpenTelemetry, <strong>visualizar</strong> os traces e <strong>achar o gargalo</strong> — depois instrumentar o C3.A2.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Ler um trace</a></li>
+      <li><a href="#m2">Missão 2 — Instrumentar com OpenTelemetry</a></li>
+      <li><a href="#m3">Missão 3 — Visualizar os traces (Jaeger)</a></li>
+      <li><a href="#m4">Missão 4 — Instrumentar o C3.A2 e achar o gargalo</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>Seu sistema tem vários serviços. Hoje você aprende a <strong>enxergar</strong> a jornada de uma requisição e descobrir <strong>onde</strong> o tempo é gasto — sem adivinhação.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Python 3.12</strong> com <code>fastapi</code>, <code>uvicorn</code> e <code>httpx</code>.</li>
+    <li>Os pacotes do OpenTelemetry: <code>pip install opentelemetry-distro opentelemetry-instrumentation-fastapi opentelemetry-exporter-otlp</code> (a Missão 2 detalha).</li>
+    <li>O exemplo da aula: <code>aulas/exemplos/aula15/tracing_demo.py</code>. Para a Missão 3, <strong>Docker</strong> (para subir o Jaeger).</li>
+    <li>Reaproveite o <code>gateway/</code> + <code>inferencia/</code> da Aula 14 como fluxo a instrumentar.</li>
+  </ul>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Pode usar docs, colegas e IA; registre no <code>PROMPTS.md</code> o que usou e <strong>o que fez</strong> com a resposta.</p>
+  <div class="box aviso"><p><span class="rot">📒 Obrigatório — <code>PROMPTS.md</code>.</span> Fonte · pergunta · resumo · o que você fez. Não vale colar o que não entende.</p></div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Ler um trace <span class="tag">entender</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> entender span, trace e cascata (waterfall) antes de instrumentar código real.</p>
+<pre><code>cd exemplos/aula15
+python tracing_demo.py        <span class="c"># imprime a cascata e aponta a etapa mais lenta</span></code></pre>
+  <p>Edite as <strong>durações</strong> no final do arquivo (ex.: faça a <code>recuperacao</code> ficar mais lenta que a <code>geracao</code>) e rode de novo: o <strong>gargalo</strong> apontado deve mudar.</p>
+  <ul class="check">
+    <li>rodei e li a cascata (quem é pai/filho de quem)</li>
+    <li>mudei as durações e o gargalo apontado mudou</li>
+    <li>sei dizer o que é <strong>span</strong>, <strong>trace</strong> e <strong>trace_id</strong></li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Releia o slide "Rastreamento distribuído". <strong>IA (registre):</strong> <em>"O que é um span e como vários spans formam um trace? O que o trace_id tem a ver com isso?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Sua versão do <code>tracing_demo.py</code> com outro gargalo + uma frase explicando a cascata.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Instrumentar com OpenTelemetry <span class="tag">instrumentar</span> <span class="tempo">~25 min</span></h2>
+  <p><strong>Objetivo:</strong> gerar traces a partir de <strong>código real</strong> (o gateway + a inferência da Aula 14), com exportação para o <strong>console</strong> primeiro.</p>
+
+  <h3>Passo 1 — instale e rode com a instrumentação automática</h3>
+<pre><code>pip install opentelemetry-distro opentelemetry-instrumentation-fastapi
+opentelemetry-bootstrap -a install
+<span class="c"># exporta os spans para o console (sem backend ainda):</span>
+opentelemetry-instrument --traces_exporter console uvicorn app:app --app-dir inferencia --port 8001</code></pre>
+  <p>Faça algumas requisições e veja os <strong>spans aparecerem no console</strong> (nome, duração, trace_id).</p>
+
+  <h3>Passo 2 — propague o contexto entre serviços</h3>
+  <p>Instrumente também o <strong>gateway</strong> e o cliente HTTP (<code>opentelemetry-instrumentation-httpx</code>). Assim o <code>trace_id</code> do gateway <strong>continua</strong> na inferência — um único trace cobre os dois serviços.</p>
+
+  <ul class="check">
+    <li>spans aparecendo no console (inferência)</li>
+    <li>gateway instrumentado e chamando a inferência</li>
+    <li>o <strong>mesmo</strong> trace_id aparece nos dois serviços</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Não aparece nada? Confirme que rodou via <code>opentelemetry-instrument</code>. <strong>IA (registre):</strong> <em>"Como o OpenTelemetry propaga o contexto de trace entre dois serviços FastAPI por HTTP?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Saída do console mostrando spans dos <strong>dois</strong> serviços com o mesmo trace_id.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Visualizar os traces (Jaeger) <span class="tag">visualizar</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> ver a <strong>cascata visual</strong> num visualizador de verdade.</p>
+<pre><code><span class="c"># sobe o Jaeger (tudo-em-um) com interface em http://localhost:16686</span>
+docker run -d --name jaeger -p 16686:16686 -p 4317:4317 jaegertracing/all-in-one:latest
+<span class="c"># aponte o exporter OTLP para o Jaeger e rode os servicos:</span>
+<span class="c"># set OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 (e --traces_exporter otlp)</span></code></pre>
+  <p>Gere requisições, abra <code>localhost:16686</code>, escolha o serviço e veja o trace em <strong>cascata</strong>. Ache a <strong>barra mais longa</strong>.</p>
+  <ul class="check">
+    <li>Jaeger no ar (16686)</li>
+    <li>traces chegando (vejo a cascata)</li>
+    <li>identifiquei visualmente a etapa mais lenta</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Nada no Jaeger? Confirme a porta <strong>4317</strong> (OTLP gRPC) e o <code>OTEL_EXPORTER_OTLP_ENDPOINT</code>. <strong>IA (registre):</strong> <em>"Qual a diferenca entre exportar traces para o console e para um backend OTLP como o Jaeger?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Um <strong>print</strong> da cascata no Jaeger com a etapa mais lenta destacada.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Instrumentar o C3.A2 e achar o gargalo <span class="tag">entregar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> aplicar tudo ao projeto e produzir a análise do gargalo.</p>
+  <ol>
+    <li>Instrumente o <strong>fluxo do RAG</strong> (gateway → recuperação → geração) com OpenTelemetry.</li>
+    <li>Colete um trace de ponta a ponta de uma pergunta e <strong>salve a imagem</strong>.</li>
+    <li>Escreva a <strong>análise</strong>: qual é a etapa mais lenta e o que você faria (ex.: cache, timeout, modelo menor).</li>
+  </ol>
+  <ul class="check">
+    <li>C3.A2 instrumentado (trace cobre os serviços do fluxo)</li>
+    <li>imagem do rastreamento salva no repositório</li>
+    <li>análise do gargalo escrita</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Projeto instrumentado + imagem do trace + análise do gargalo.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <ul>
+    <li><strong>Span manual:</strong> crie um span <em>customizado</em> em torno de um trecho específico (ex.: só a montagem do prompt) para medi-lo separadamente.</li>
+    <li><strong>Atributos no span:</strong> anexe atributos úteis (tamanho do texto, modelo usado) e filtre por eles no Jaeger.</li>
+    <li><strong>Erro no trace:</strong> force uma falha na geração e veja o span marcado como <em>erro</em> na cascata — observabilidade também mostra <strong>o que quebrou</strong>, não só o que demorou.</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> <code>tracing_demo.py</code> com outro gargalo + explicação</li>
+    <li><strong>Missão 2:</strong> spans no console com o mesmo trace_id nos dois serviços</li>
+    <li><strong>Missão 3:</strong> print da cascata no Jaeger</li>
+    <li><strong>Missão 4:</strong> C3.A2 instrumentado + imagem + análise do gargalo</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a próxima aula (EAD de Segurança).</span> O projeto instrumentado · a imagem do rastreamento · a análise do gargalo · o <code>PROMPTS.md</code>.</p></div>
+
+  <footer>
+    <a href="aula-15-observabilidade.html">← Slides da Aula 15</a>
+    <a href="../index.html">☰ Índice</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
