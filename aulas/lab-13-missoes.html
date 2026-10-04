@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 13 · Nuvem e containers · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 13</h1>
+  <p>Nuvem, containers e o primeiro deploy · Conteinerizar e publicar, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-13-nuvem-containers-deploy.html">← Slides da Aula 13</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong>: rodar o serviço local, <strong>conteinerizar</strong>, <strong>publicar na nuvem</strong> com URL pública e <strong>lançar o C3.A2</strong>. Hoje seu serviço sai da sua máquina e vai para o mundo.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Rodar o serviço local</a></li>
+      <li><a href="#m2">Missão 2 — Conteinerizar (build + run)</a></li>
+      <li><a href="#m3">Missão 3 — Publicar na nuvem (URL pública)</a></li>
+      <li><a href="#m4">Missão 4 — Lançar o C3.A2</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>Você vai pegar um serviço que roda na sua máquina e <strong>empacotá-lo</strong> num container, para então <strong>publicá-lo</strong> numa nuvem gratuita. A peça nova é o <code>Dockerfile</code> — a receita que descreve a imagem.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Docker</strong> instalado e o <strong>daemon rodando</strong> (abra o Docker Desktop; <code>docker ps</code> deve responder sem erro).</li>
+    <li><strong>Python 3.12</strong> com <code>fastapi</code> e <code>uvicorn</code> (para rodar local antes de conteinerizar).</li>
+    <li>Uma conta grátis em <strong>Render</strong> ou <strong>Railway</strong> (free tier) para a Missão 3.</li>
+    <li>O exemplo da aula: <code>aulas/exemplos/aula13/</code> (<code>app.py</code>, <code>Dockerfile</code>, <code>requirements.txt</code>, <code>.dockerignore</code>).</li>
+  </ul>
+
+  <div class="box dica">
+    <p><span class="rot">💡 Por que esse exemplo.</span> O <code>app.py</code> devolve o <strong>hostname</strong>. Local, é o nome do seu PC; no container, é o <strong>ID do container</strong>. Isso deixa <strong>visível</strong> qual instância respondeu — essencial quando o serviço escalar.</p>
+  </div>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Você <strong>pode e deve</strong> buscar ajuda (docs, colegas, IA). A exigência é <strong>rastreabilidade</strong>: registre no <code>PROMPTS.md</code> o que usou e <strong>o que fez</strong> com a resposta.</p>
+  <div class="box aviso">
+    <p><span class="rot">📒 Obrigatório — <code>PROMPTS.md</code> no seu repositório.</span> Fonte · o que perguntou · resumo da resposta · o que você fez com ela. Não vale colar o que não entende.</p>
+  </div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Rodar o serviço local <span class="tag">entender</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> ver o serviço funcionando <strong>antes</strong> de conteinerizar (assim você sabe que o problema, se houver, é do container, não do código).</p>
+<pre><code>cd exemplos/aula13
+uvicorn app:app --reload --port 8000     <span class="c"># abra http://127.0.0.1:8000</span>
+<span class="c"># GET /        -> {"mensagem":"Ola da nuvem!","host":"&lt;seu-pc&gt;","versao":"1.0"}</span>
+<span class="c"># GET /health  -> {"status":"ok"}     GET /docs -> Swagger</span></code></pre>
+  <ul class="check">
+    <li><code>/</code> responde com o <code>host</code> (nome do seu PC) e a versão</li>
+    <li><code>/health</code> responde <code>{"status":"ok"}</code></li>
+    <li>o <code>/docs</code> abre</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Faltou dependência? <code>pip install fastapi "uvicorn[standard]"</code>. <strong>IA (registre):</strong> <em>"Para que serve o endpoint <code>/health</code> num serviço que vai para a nuvem?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> O serviço rodando local, commitado no seu repositório.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Conteinerizar (build + run) <span class="tag">construir</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> empacotar o serviço numa imagem e rodá-lo <strong>isolado</strong> — e ver o <code>host</code> mudar para o ID do container.</p>
+<pre><code>docker build -t servico-nuvem .          <span class="c"># le o Dockerfile e monta a imagem</span>
+docker run -p 8000:8000 servico-nuvem    <span class="c"># roda; -p liga a porta sua -> do container</span>
+<span class="c"># acesse http://127.0.0.1:8000 : o "host" agora e o ID do container</span>
+docker ps                                 <span class="c"># veja o container rodando</span></code></pre>
+  <h3>Entenda o Dockerfile (linha a linha)</h3>
+  <ul>
+    <li><code>FROM python:3.12-slim</code> — base enxuta com Python.</li>
+    <li><code>COPY requirements.txt</code> + <code>RUN pip install</code> <strong>antes</strong> do código — aproveita o <strong>cache de camadas</strong> (muda o código, não reinstala tudo).</li>
+    <li><code>CMD [... "--host","0.0.0.0" ...]</code> — ouvir em <code>0.0.0.0</code>, senão ninguém de fora do container acessa.</li>
+  </ul>
+  <ul class="check">
+    <li><code>docker build</code> terminou sem erro</li>
+    <li><code>docker run -p 8000:8000</code> e o serviço respondeu no navegador</li>
+    <li>o <code>host</code> no JSON mudou (virou o ID do container)</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> <em>"Cannot connect to the Docker daemon"</em> = o Docker Desktop não está aberto. <em>Porta ocupada</em>? pare o uvicorn local da Missão 1. <strong>IA (registre):</strong> <em>"Por que, no Dockerfile, copiar o requirements.txt e instalar as dependências antes de copiar o código aproveita melhor o cache?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> O <code>Dockerfile</code> no repositório + um print do serviço respondendo <strong>de dentro do container</strong> (host = ID do container).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Publicar na nuvem (URL pública) <span class="tag">deploy</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> colocar o serviço <strong>no ar</strong>, acessível por qualquer pessoa, numa nuvem gratuita.</p>
+  <ol>
+    <li>Suba o código (com o <code>Dockerfile</code>) para um repositório no <strong>GitHub</strong>.</li>
+    <li>No <strong>Render</strong> (ou Railway): <em>New → Web Service</em> → conecte o repositório → ele detecta o <code>Dockerfile</code> → <em>Deploy</em>.</li>
+    <li>Configure a porta/health check se pedir (<code>/health</code>) e aguarde o build terminar.</li>
+    <li>Acesse a <strong>URL pública</strong> gerada e confirme o JSON de <code>/</code>.</li>
+  </ol>
+  <div class="box dica"><p><span class="rot">💡 Free tier "dorme".</span> No plano gratuito, o serviço pode <strong>hibernar</strong> por inatividade e a <strong>primeira</strong> requisição demora alguns segundos (cold start — lembra da Aula 6?). É esperado.</p></div>
+  <ul class="check">
+    <li>código + Dockerfile no GitHub</li>
+    <li>deploy concluído no Render/Railway</li>
+    <li>a <strong>URL pública</strong> responde o JSON de <code>/</code></li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Build falhou? Leia o <strong>log do deploy</strong> (quase sempre diz a dependência faltante). Porta errada? a nuvem costuma injetar a porta via variável <code>PORT</code> — ajuste o <code>CMD</code>/start se o provedor pedir. <strong>IA (registre):</strong> <em>"Como o Render decide a porta que meu container deve escutar e o que e a variavel PORT?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> A <strong>URL pública</strong> do serviço no ar (anote no README).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Lançar o C3.A2 <span class="tag">entregar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> começar o projeto integrador conteinerizando seus serviços — um <code>Dockerfile</code> por serviço.</p>
+  <ol>
+    <li>No projeto do <strong>C3.A2</strong>, escolha o serviço mais simples e escreva o <code>Dockerfile</code> dele (use o desta aula como modelo).</li>
+    <li><code>docker build</code> de <strong>cada</strong> serviço, confirmando que todos buildam individualmente.</li>
+    <li>Anote no README o comando de build/run de cada serviço.</li>
+  </ol>
+  <ul class="check">
+    <li>um <code>Dockerfile</code> por serviço do C3.A2</li>
+    <li>cada serviço builda individualmente</li>
+    <li>README com os comandos de build/run</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Repositório do <strong>C3.A2</strong> com todos os serviços conteinerizados (buildando). Subir tudo junto fica para a Aula 14.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <ul>
+    <li><strong>Imagem menor:</strong> compare o tamanho da imagem (<code>docker images</code>) antes e depois de um <code>.dockerignore</code> caprichado e de um <code>FROM ...-slim</code>. Quanto você economizou?</li>
+    <li><strong>Variável de ambiente:</strong> rode <code>docker run -e APP_VERSION=2.0 -p 8000:8000 servico-nuvem</code> e veja a versão mudar na resposta — sem reconstruir a imagem.</li>
+    <li><strong>Duas réplicas:</strong> rode dois containers em portas diferentes (<code>-p 8000</code> e <code>-p 8001</code>) e veja o <code>host</code> diferente em cada um — a prévia da escala da próxima aula.</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> serviço rodando local (/, /health, /docs)</li>
+    <li><strong>Missão 2:</strong> imagem construída e container rodando (host = ID do container)</li>
+    <li><strong>Missão 3:</strong> URL pública no ar (Render/Railway)</li>
+    <li><strong>Missão 4:</strong> serviços do C3.A2 conteinerizados (buildando)</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido com as ajudas que você usou</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a próxima aula.</span> A <strong>URL pública</strong> do serviço · os serviços do <strong>C3.A2</strong> conteinerizados · o <code>PROMPTS.md</code>.</p></div>
+
+  <footer>
+    <a href="aula-13-nuvem-containers-deploy.html">← Slides da Aula 13</a>
+    <a href="../index.html">☰ Índice</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
