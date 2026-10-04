@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 16 · Segurança e LGPD · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 16 (EAD)</h1>
+  <p>Segurança, privacidade e LGPD · Proteger a plataforma, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-16-seguranca-lgpd-ead.html">← Slides da Aula 16</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab (EAD).</span> São <strong>4 missões</strong>: entender o JWT, <strong>proteger o gateway com JWT</strong>, <strong>garantir HTTPS e logs limpos (LGPD)</strong> e <strong>fechar o C3.A2</strong>. Como é Estudo Dirigido, faça no seu ritmo — e <strong>resolva o simulado ENADE</strong> ao final (correção na próxima aula).</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Entender o JWT</a></li>
+      <li><a href="#m2">Missão 2 — Proteger o gateway com JWT</a></li>
+      <li><a href="#m3">Missão 3 — HTTPS e logs limpos (LGPD)</a></li>
+      <li><a href="#m4">Missão 4 — Fechar o C3.A2 + simulado ENADE</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>Seu sistema já roda na nuvem. Falta <strong>protegê-lo</strong>: só quem está autenticado acessa as rotas sensíveis, o tráfego vai cifrado (HTTPS) e nenhum dado pessoal vaza em log. Hoje você aplica isso ao gateway do C3.A2.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Python 3.12</strong> com <code>fastapi</code>, <code>uvicorn</code>, <code>httpx</code> e <code>pyjwt</code> (<code>pip install pyjwt</code>) ou o <code>auth_demo.py</code> como base (sem dependências).</li>
+    <li>O gateway do <strong>C3.A2</strong> (ou o da Aula 14) para adicionar a proteção.</li>
+    <li>O exemplo da aula: <code>aulas/exemplos/aula16/auth_demo.py</code>.</li>
+  </ul>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Pode usar docs, colegas e IA; registre no <code>PROMPTS.md</code> o que usou e <strong>o que fez</strong> com a resposta.</p>
+  <div class="box aviso"><p><span class="rot">📒 Obrigatório — <code>PROMPTS.md</code>.</span> Fonte · pergunta · resumo · o que você fez. Não vale colar o que não entende.</p></div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Entender o JWT <span class="tag">entender</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> ver que o JWT é <strong>assinado</strong> (integridade) mas <strong>não cifrado</strong> (o payload é legível).</p>
+<pre><code>cd exemplos/aula16
+python auth_demo.py          <span class="c"># 4 casos: valido, adulterado, segredo errado, expirado</span></code></pre>
+  <p>Copie o token impresso e cole em <strong>jwt.io</strong>: você <strong>lê</strong> o payload sem o segredo. Agora mude o <code>exp</code> no código e rode de novo.</p>
+  <ul class="check">
+    <li>rodei e vi os 4 casos (só o válido passa)</li>
+    <li>decodifiquei o payload em jwt.io (é legível!)</li>
+    <li>sei dizer a diferença entre <strong>integridade</strong> (assinatura) e <strong>sigilo</strong> (cifra)</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Releia "Como um JWT funciona". <strong>IA (registre):</strong> <em>"Por que o payload de um JWT pode ser lido por qualquer um, e o que exatamente a assinatura protege?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Uma frase no <code>relatorio_seguranca.md</code>: por que não se guarda segredo no payload do JWT.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Proteger o gateway com JWT <span class="tag">construir</span> <span class="tempo">~25 min</span></h2>
+  <p><strong>Objetivo:</strong> exigir um token válido nas rotas sensíveis — requisição sem token recebe <strong>401</strong>.</p>
+  <ol>
+    <li>Crie uma rota <code>POST /login</code> que valida um usuário fixo e devolve um <strong>JWT</strong> (use <code>pyjwt</code> ou as funções do <code>auth_demo.py</code>).</li>
+    <li>Proteja <code>/infer</code>: leia o header <code>Authorization: Bearer &lt;token&gt;</code>, verifique a assinatura e a expiração; inválido → <strong>401</strong>.</li>
+    <li>Teste: sem token → 401; com token válido → passa; com token adulterado → 401.</li>
+  </ol>
+<pre><code><span class="c"># sem token -> 401</span>
+curl -i -X POST localhost:8000/infer -d "{\"texto\":\"oi\"}"
+<span class="c"># com token</span>
+curl -X POST localhost:8000/infer -H "Authorization: Bearer &lt;token&gt;" -d "{\"texto\":\"oi\"}"</code></pre>
+  <ul class="check">
+    <li><code>/login</code> devolve um JWT</li>
+    <li><code>/infer</code> sem token responde <strong>401</strong></li>
+    <li><code>/infer</code> com token válido passa; adulterado é rejeitado</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Use <code>fastapi.security.HTTPBearer</code> para ler o header. <strong>IA (registre):</strong> <em>"Como ler e validar um token Bearer num endpoint FastAPI e retornar 401 quando invalido?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Gateway com <code>/login</code> + <code>/infer</code> protegido (evidência dos 3 casos: sem token, válido, adulterado).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — HTTPS e logs limpos (LGPD) <span class="tag">proteger</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> cifrar o transporte e evitar vazar dados pessoais.</p>
+  <ol>
+    <li><strong>HTTPS:</strong> confirme que a URL pública do deploy é <code>https://</code> (o provedor entrega o certificado). Teste e registre.</li>
+    <li><strong>Segredo fora do código:</strong> leia o segredo do JWT de uma <strong>variável de ambiente</strong>, nunca fixo no fonte.</li>
+    <li><strong>Logs limpos (minimização):</strong> garanta que os logs <strong>não</strong> gravam o texto completo do usuário nem dados pessoais; logue só o necessário (ex.: o <code>trace_id</code> e o tamanho do texto).</li>
+  </ol>
+  <ul class="check">
+    <li>URL pública em HTTPS confirmada</li>
+    <li>segredo do JWT vindo de variável de ambiente</li>
+    <li>logs sem dados pessoais (minimização)</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> <strong>IA (registre):</strong> <em>"Quais principios da LGPD se aplicam a enviar o texto do usuario para uma API de LLM de terceiros, e como a minimizacao reduz o risco?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> No <code>relatorio_seguranca.md</code>: HTTPS confirmado, segredo em env e a política de logs (o que você passou a <strong>não</strong> logar).</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Fechar o C3.A2 + simulado ENADE <span class="tag">entregar</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> deixar o projeto integrador pronto para a entrega e revisar para a prova nacional.</p>
+  <ol>
+    <li>Garanta que o <strong>C3.A2</strong> está completo: microsserviços conteinerizados, resiliência (circuit breaker), observabilidade (trace) e segurança (JWT/HTTPS/LGPD), com <strong>README de arquitetura</strong>.</li>
+    <li>Escreva o breve <strong>relatório de trade-offs</strong> (CAP, custo, latência) pedido no enunciado.</li>
+    <li><strong>Resolva o simulado ENADE</strong> (disponibilizado no AVA). Revise pelos quadros <em>Foco ENADE</em> de cada aula.</li>
+  </ol>
+  <ul class="check">
+    <li>C3.A2 completo (containers + resiliência + observabilidade + segurança)</li>
+    <li>README de arquitetura + relatório de trade-offs</li>
+    <li>simulado ENADE resolvido</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> C3.A2 pronto para a entrega da Aula 17 + simulado ENADE resolvido.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <ul>
+    <li><strong>Papéis (RBAC):</strong> faça uma rota que só aceita token com <code>role=admin</code> — autorização de verdade, além da autenticação.</li>
+    <li><strong>Expiração curta + refresh:</strong> emita tokens com <code>exp</code> curto e implemente um fluxo simples de renovação.</li>
+    <li><strong>Anonimização:</strong> antes de enviar o texto ao LLM, mascare padrões de CPF/e-mail com uma expressão regular. Mostre o antes/depois.</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> entendeu integridade × sigilo (frase no relatório)</li>
+    <li><strong>Missão 2:</strong> gateway com JWT (401 sem token; válido passa)</li>
+    <li><strong>Missão 3:</strong> HTTPS + segredo em env + logs sem PII</li>
+    <li><strong>Missão 4:</strong> C3.A2 completo + simulado ENADE resolvido</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a Aula 17 (prova C3.A1).</span> O <strong>C3.A2 completo e seguro</strong> (JWT/HTTPS/LGPD) · o <code>relatorio_seguranca.md</code> · o simulado ENADE resolvido · o <code>PROMPTS.md</code>.</p></div>
+
+  <footer>
+    <a href="aula-16-seguranca-lgpd-ead.html">← Slides da Aula 16</a>
+    <a href="../index.html">☰ Índice</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
