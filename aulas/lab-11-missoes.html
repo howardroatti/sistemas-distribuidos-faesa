@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 11 · Raft e resiliência · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 11</h1>
+  <p>Consenso (Raft) e resiliência · Ver o líder ser eleito e blindar a chamada de IA, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-11-consenso-raft-resiliencia.html">← Slides da Aula 11</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong>. As duas primeiras usam uma simulação para <strong>enxergar o Raft</strong> (eleição + log). A terceira <strong>blinda</strong> uma chamada remota (timeout + retentativa + disjuntor). A quarta <strong>conclui o C2.A2</strong>. Tudo roda no seu computador — nada vai para fora.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Eleição de líder</a></li>
+      <li><a href="#m2">Missão 2 — Log replicado e a queda do líder</a></li>
+      <li><a href="#m3">Missão 3 — Blindar a chamada (timeout + retry + disjuntor)</a></li>
+      <li><a href="#m4">Missão 4 — Concluir o C2.A2</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>No CAP você viu réplicas <strong>divergirem</strong>. Hoje você vê o outro lado: como um grupo <strong>concorda</strong> num único valor (Raft) e como <strong>sobreviver</strong> a um serviço remoto instável. Dois aquecimentos em Python puro (sem dependências) e depois o kit do C2.A2.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Python 3.12</strong> e um editor. Para as Missões 1–3, nada de Docker nem bibliotecas extras.</li>
+    <li>Os aquecimentos: <code>aulas/exemplos/aula11/raft_sim.py</code> e <code>aulas/exemplos/aula11/resiliencia.py</code> (copie para o seu <code>sd-2026-2</code>).</li>
+    <li>Para a Missão 4: o kit <code>sd-2026-2-kit-c2a2</code> clonado e o ambiente montado (como na Aula 8).</li>
+  </ul>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Você <strong>pode e deve</strong> buscar ajuda (docs, colegas, IA). A exigência é <strong>rastreabilidade</strong>: registre o que usou no <code>PROMPTS.md</code>. Vale como evidência de processo.</p>
+  <div class="box aviso">
+    <p><span class="rot">📒 Obrigatório — <code>PROMPTS.md</code> no seu repositório.</span> Anote fonte, o que perguntou, o resumo da resposta e <strong>o que você fez com ela</strong>. O que não vale: colar código que você não entende.</p>
+  </div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Eleição de líder <span class="tag">entender</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> ver a <strong>maioria (quórum)</strong> em ação — um candidato só vira líder com a maioria dos votos, e cada nó vota uma vez por mandato.</p>
+
+  <h3>Passo 1 — rode a simulação</h3>
+<pre><code>python raft_sim.py          <span class="c"># acompanhe a saida, bloco a bloco</span></code></pre>
+  <p>No bloco 1, veja o Nó 1 pedir votos no <strong>mandato 1</strong> e virar líder ao atingir a maioria (3 de 5). No último bloco, veja um <strong>voto dividido</strong>: o candidato não faz maioria e <strong>ninguém</strong> é eleito.</p>
+
+  <h3>Passo 2 — responda (no <code>relatorio_raft.md</code>)</h3>
+  <ul>
+    <li>Com <strong>5</strong> nós, quantos votos formam a maioria? E com <strong>7</strong>?</li>
+    <li>Por que cada nó vota <strong>no máximo uma vez</strong> por mandato? O que isso evita?</li>
+  </ul>
+  <ul class="check">
+    <li>rodei <code>raft_sim.py</code> e vi a eleição por maioria</li>
+    <li>vi o cenário de voto dividido (sem líder)</li>
+    <li>respondi as duas perguntas sobre quórum</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Releia o slide "Eleição de líder". <strong>IA (registre):</strong> <em>"Por que, num consenso por maioria, não podem existir dois líderes no mesmo mandato? Explique o conceito, sem código."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> As respostas sobre quórum no <code>relatorio_raft.md</code>.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Log replicado e a queda do líder <span class="tag">experimento</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> ver que uma escrita só <strong>comita</strong> com a maioria e que o sistema <strong>sobrevive</strong> à queda do líder, sem perder o que já foi comitado.</p>
+
+  <h3>Passo 1 — observe os blocos 2 a 5</h3>
+  <p>A entrada <code>x=10</code> comita por maioria; o Nó 1 (líder) cai; o Nó 2 abre o <strong>mandato 2</strong>, é eleito e comita <code>x=20</code>. O <code>x=10</code> <strong>permanece</strong>.</p>
+
+  <h3>Passo 2 — torne o experimento <em>seu</em></h3>
+  <ol>
+    <li>Mude para <strong>N = 7</strong> nós (a maioria recalcula sozinha). Rode e confira o novo quórum.</li>
+    <li>Derrube <strong>dois</strong> nós antes de uma replicação. Ela ainda comita? (dica: maioria de 7 é 4).</li>
+    <li>Derrube nós suficientes para <strong>não</strong> haver maioria e mostre que a escrita <strong>não comita</strong>.</li>
+  </ol>
+  <ul class="check">
+    <li>vi <code>x=10</code> comitar por maioria e sobreviver à troca de líder</li>
+    <li>rodei com N=7 e confirmei o quórum</li>
+    <li>mostrei um caso em que a escrita NÃO comita (sem maioria)</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> O número de confirmações aparece na saída de <code>replicar()</code>. <strong>IA (registre):</strong> <em>"Por que uma escrita só pode ser considerada comitada quando a maioria das réplicas a gravou?"</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Sua versão do <code>raft_sim.py</code> (N=7) + no <code>relatorio_raft.md</code>: a relação entre <strong>maioria</strong> e o lado <strong>CP</strong> do CAP.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Blindar a chamada (timeout + retry + disjuntor) <span class="tag">resiliência</span> <span class="tempo">~25 min</span></h2>
+  <p><strong>Objetivo:</strong> ver e ajustar as três defesas de uma chamada remota — e entender os <strong>três estados</strong> do disjuntor.</p>
+
+  <h3>Passo 1 — rode e leia</h3>
+<pre><code>python resiliencia.py</code></pre>
+  <p>Acompanhe: timeouts e erros viram falha; na 3ª falha o disjuntor <strong>ABRE</strong>; em <code>t3</code> ele <strong>falha rápido</strong> (nem chama o serviço); após o descanso entra em <strong>meia-volta</strong>, sonda e <strong>fecha</strong>.</p>
+
+  <h3>Passo 2 — mexa nos parâmetros</h3>
+  <ol>
+    <li>Troque <code>limite_falhas</code> e <code>descanso</code> do <code>Disjuntor</code> e observe o efeito.</li>
+    <li>Edite o <code>roteiro</code> do serviço para que o disjuntor <strong>reabra</strong> (sondagem falha na meia-volta).</li>
+    <li>Implemente <strong>backoff</strong>: faça a retentativa esperar mais a cada tentativa (ex.: 1, 2, 4 "ticks").</li>
+  </ol>
+  <ul class="check">
+    <li>identifiquei os 3 estados na saída (fechado → aberto → meia-volta → fechado)</li>
+    <li>provoquei o disjuntor a reabrir mudando o roteiro</li>
+    <li>implementei backoff na retentativa</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Releia o slide "O disjuntor (3 estados)". <strong>IA (registre):</strong> <em>"O que é exponential backoff e por que ele ajuda um serviço que está sobrecarregado a se recuperar? Sem código."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Sua versão do <code>resiliencia.py</code> com backoff + uma anotação: <em>o que acontece sem o disjuntor quando o serviço cai?</em></p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Concluir o C2.A2 <span class="tag">entregar</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> fechar o RAG distribuído e proteger a parte mais frágil — a chamada ao LLM.</p>
+  <ol>
+    <li><strong>Proteja a chamada ao LLM</strong> (serviço de geração) com <strong>timeout + retentativa + disjuntor</strong>, portando o padrão do <code>resiliencia.py</code>.</li>
+    <li>Garanta que a operação é <strong>idempotente</strong> (ou use uma <strong>chave de idempotência</strong>) antes de retentar.</li>
+    <li><strong>Feche o fluxo</strong>: ingestão → recuperação → geração respondendo a uma pergunta de ponta a ponta.</li>
+  </ol>
+  <ul class="check">
+    <li>chamada ao LLM com circuit breaker (timeout + retry + disjuntor)</li>
+    <li>retentativa só onde é idempotente (ou com chave de idempotência)</li>
+    <li>RAG respondendo de ponta a ponta (ingestão → recuperação → geração)</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> O <strong>C2.A2 completo</strong> no repositório, com a chamada ao LLM protegida. É o que será cobrado na entrega da Aula 12.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <ul>
+    <li><strong>Split-brain:</strong> na simulação do Raft, force <strong>dois</strong> candidatos no mesmo mandato e mostre por que <strong>só um</strong> pode vencer (ou nenhum) — nunca dois líderes.</li>
+    <li><strong>Half-open honesto:</strong> faça o disjuntor, na meia-volta, deixar passar <strong>apenas uma</strong> sondagem por vez (bloqueando as demais até ela responder).</li>
+    <li><strong>Chave de idempotência:</strong> adicione um <code>id</code> por requisição ao serviço de geração e faça o servidor <strong>devolver o resultado guardado</strong> se o mesmo <code>id</code> chegar de novo (retry seguro de verdade).</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> respostas de quórum no <code>relatorio_raft.md</code></li>
+    <li><strong>Missão 2:</strong> <code>raft_sim.py</code> (N=7) + relação maioria ↔ CP</li>
+    <li><strong>Missão 3:</strong> <code>resiliencia.py</code> com backoff + disjuntor reabrindo</li>
+    <li><strong>Missão 4:</strong> C2.A2 completo, chamada ao LLM protegida</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido com as ajudas que você usou</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a Aula 12 (dia da prova C2.A1).</span> O <strong>C2.A2 completo</strong> (RAG de ponta a ponta, chamada ao LLM protegida) · os relatórios · o <code>PROMPTS.md</code>.</p></div>
+
+  <footer>
+    <a href="aula-11-consenso-raft-resiliencia.html">← Slides da Aula 11</a>
+    <a href="../index.html">☰ Índice</a>
+    <a href="https://github.com/howardroatti/sd-2026-2-kit-c2a2" target="_blank">Kit C2.A2</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
