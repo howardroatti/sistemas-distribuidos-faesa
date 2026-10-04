@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Laboratório — Aula 10 · CAP · FAESA · Prof. Howard Cruz Roatti</title>
+<style>
+  :root{--azul:#0d2b57;--azul2:#12437f;--suave:#eef4fb;--cinza:#1f2937;--muted:#6b7280;--borda:#cbd5e1;
+        --ok:#16a34a;--okbg:#e7f6ec;--warn:#e08a00;--warnbg:#fff8e1;--roxo:#7c3aed;--roxobg:#f3effe}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--cinza);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:36px 24px}
+  header .wrap{max-width:940px;margin:0 auto}
+  header h1{margin:0;font-size:28px} header p{margin:8px 0 0;color:#a9c2e8}
+  header .back{display:inline-block;margin-top:12px;color:#cfe0f5;font-size:14px}
+  main{max-width:940px;margin:0 auto;padding:26px 24px 70px}
+  h2{color:var(--azul);border-bottom:2px solid var(--suave);padding-bottom:6px;font-size:23px;margin-top:38px}
+  h3{color:var(--azul2);font-size:18px;margin:22px 0 6px}
+  a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:.9em}
+  pre{background:#0d1b2e;color:#e6edf6;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(13,43,87,.15)}
+  pre code{background:transparent;color:inherit;padding:0}
+  pre .c{color:#9fb4cc;font-style:italic}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  th,td{border:1px solid var(--borda);padding:7px 11px;text-align:left;font-size:14.5px;vertical-align:top}
+  th{background:var(--suave);color:var(--azul)}
+  ul,ol{padding-left:22px} li{margin:5px 0}
+  .sumario{background:var(--suave);border:1px solid var(--borda);border-radius:10px;padding:14px 20px;margin:22px 0}
+  .sumario ol{margin:6px 0 0;columns:2;column-gap:32px} .sumario li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 16px;margin:16px 0;border:1px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box.dica{background:var(--suave);border-color:#b8cbe6}
+  .box.aviso{background:var(--warnbg);border-color:#f0c36d}
+  .box.travou{background:var(--roxobg);border-color:#c9b8f0}
+  .box.entrega{background:var(--okbg);border-color:#9ad4ac}
+  .box .rot{font-weight:700}
+  .box.travou .rot{color:var(--roxo)} .box.entrega .rot{color:var(--ok)} .box.aviso .rot{color:#a56a00}
+  .check{list-style:none;padding-left:2px} .check li{margin:6px 0}
+  .check li::before{content:"\2610";margin-right:10px;color:var(--azul2);font-size:1.15em;vertical-align:-1px}
+  .mission{border:1px solid var(--borda);border-left:6px solid var(--azul2);border-radius:10px;
+           padding:6px 22px 20px;margin:26px 0;background:#fbfdff}
+  .mission h2{border-bottom:none;margin-top:20px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;
+       background:#dde7f4;color:var(--azul);vertical-align:2px;margin-left:8px}
+  .tempo{color:var(--muted);font-size:14px;font-weight:400}
+  footer{color:var(--muted);font-size:13px;border-top:1px solid var(--suave);margin-top:40px;padding-top:14px}
+  footer a{margin-right:16px}
+  kbd{background:#e2e8f0;border:1px solid #b6c2d1;border-bottom-width:2px;border-radius:4px;padding:0 6px;font-size:.85em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Guia do Laboratório — Aula 10</h1>
+  <p>Replicação, consistência e o teorema CAP · O experimento da partição, em 4 missões · FAESA · 2026/2</p>
+  <a class="back" href="aula-10-replicacao-consistencia-cap.html">← Slides da Aula 10</a>&nbsp;&nbsp;
+  <a class="back" href="../index.html">☰ Índice</a>
+</div></header>
+
+<main>
+
+  <div class="box aviso">
+    <p><span class="rot">🎯 Como funciona este lab.</span> São <strong>4 missões</strong> em sequência. Cada uma tem um <strong>objetivo</strong>, um <strong>passo a passo</strong>, um <strong>checklist</strong> e um <strong>entregável</strong>. Hoje você vai <strong>provocar</strong> uma falha de propósito (partição de rede) e observar duas cópias do mesmo dado <strong>divergirem</strong>. Tudo roda no seu computador — nada é enviado para fora.</p>
+  </div>
+
+  <div class="sumario">
+    <strong>Roteiro de hoje</strong>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#ajuda">Regra de ouro: peça ajuda e registre</a></li>
+      <li><a href="#m1">Missão 1 — Ver a replicação funcionando</a></li>
+      <li><a href="#m2">Missão 2 — Provocar a partição e registrar a divergência</a></li>
+      <li><a href="#m3">Missão 3 — Escolher o lado do CAP (AP × CP)</a></li>
+      <li><a href="#m4">Missão 4 — Relatório CAP + avançar o C2.A2</a></li>
+      <li><a href="#desafios">Desafios (para quem voar)</a></li>
+      <li><a href="#rubrica">Autoverificação</a></li>
+    </ol>
+  </div>
+
+  <h2 id="antes">Antes de começar</h2>
+  <p>Na Aula 9 você viu como <strong>detectar</strong> eventos concorrentes. Hoje vê onde isso importa: quando duas <strong>réplicas</strong> do mesmo dado são escritas sem se falarem e <strong>divergem</strong>. O experimento é uma <strong>simulação em Python puro</strong> (sem Docker): você sobe duas réplicas <code>A</code> e <code>B</code>, corta a "rede" entre elas e observa o estrago — depois decide, no código, o que fazer sob partição.</p>
+
+  <h3>Pré-requisitos</h3>
+  <ul>
+    <li><strong>Python 3.12</strong> e um editor (VS Code). <strong>Não</strong> precisa de Docker nem de bibliotecas extras nesta simulação.</li>
+    <li>O arquivo de aquecimento: <code>aulas/exemplos/aula10/replicas_sim.py</code> (no repositório da disciplina). Copie-o para a pasta do seu repositório <code>sd-2026-2</code>.</li>
+    <li>Se o <code>venv</code> barrar no PowerShell com <em>"running scripts is disabled"</em>, rode uma vez: <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> (responda <kbd>S</kbd>).</li>
+  </ul>
+
+  <div class="box dica">
+    <p><span class="rot">💡 Por que simular, e não subir um cluster?</span> Um banco replicado de verdade (Cassandra, etcd) esconde o momento da divergência atrás de muita engenharia. A simulação deixa esse instante <strong>visível e no seu controle</strong> — que é exatamente o que a prova C2.A1 cobra: o <em>entendimento operacional</em> do CAP.</p>
+  </div>
+
+  <h2 id="ajuda">Regra de ouro: peça ajuda — e registre</h2>
+  <p>Travar faz parte. Você <strong>pode e deve</strong> buscar ajuda: documentação oficial, colegas e também uma <strong>IA (LLM)</strong>. A única exigência é <strong>rastreabilidade</strong>: registre o que usou. Isso vale como <strong>evidência de processo</strong> e treina uma competência real — usar ferramentas <em>com</em> discernimento.</p>
+
+  <div class="box aviso">
+    <p><span class="rot">📒 Obrigatório — arquivo <code>PROMPTS.md</code> no seu repositório.</span> Sempre que uma fonte externa (docs, vídeo, colega) ou uma IA te ajudar, anote. O que <strong>não</strong> vale: colar código que você não entende. O que vale: usar a ajuda para <strong>entender</strong> e então escrever/ajustar você mesmo.</p>
+  </div>
+
+  <h3>Modelo do <code>PROMPTS.md</code> (copie e preencha)</h3>
+<pre><code>## Missao 2 — provocar a particao
+- Fonte: ChatGPT / Claude / docs / colega
+- O que perguntei: "&lt;seu prompt exato&gt;"
+- Resposta (resumo em 2-3 linhas): &lt;...&gt;
+- O que EU fiz com isso: &lt;o que entendi, o que escrevi, o que mudei e por que&gt;
+</code></pre>
+  <div class="box dica">
+    <p><span class="rot">💡 Dica de bom prompt.</span> Em vez de "me dá o código", peça <strong>entendimento</strong>: <em>"Explique, sem me dar o código pronto, o que diferencia consistência forte de eventual e por que uma partição força a escolher entre C e A."</em></p>
+  </div>
+
+  <!-- ================= MISSÃO 1 ================= -->
+  <div class="mission" id="m1">
+  <h2>Missão 1 — Ver a replicação funcionando <span class="tag">entender</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> rodar o experimento e entender as peças — duas réplicas, a escrita que vai para <code>A</code> e é <strong>replicada</strong> para <code>B</code>, e a leitura em <code>B</code>.</p>
+
+  <h3>Passo 1 — rode o aquecimento</h3>
+<pre><code>python replicas_sim.py          <span class="c"># roda os 4 cenarios</span></code></pre>
+  <p>Leia a saída com calma. No <strong>Cenário 1</strong> (rede OK), a escrita em <code>A</code> aparece também em <code>B</code> (<code>[replicado]</code>) e a leitura em <code>B</code> traz o valor certo: as cópias <strong>concordam</strong>.</p>
+
+  <h3>Passo 2 — ache as peças no código</h3>
+  <ul>
+    <li>a classe <code>Replica</code> (nome, <code>valor</code>, <code>versao</code>);</li>
+    <li><code>Cluster.escrever()</code> — escreve em <code>A</code> e, <strong>se a rede estiver boa</strong>, replica para <code>B</code>;</li>
+    <li><code>Cluster.ler_de_B()</code> — a leitura que, sob partição, se comporta como <strong>AP</strong> ou <strong>CP</strong>.</li>
+  </ul>
+
+  <ul class="check">
+    <li>rodei <code>replicas_sim.py</code> e vi os 4 cenários</li>
+    <li>entendi que a escrita vai para <code>A</code> e é replicada para <code>B</code> quando a rede está boa</li>
+    <li>localizei <code>escrever()</code> e <code>ler_de_B()</code> no código</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Releia os slides "Por que replicar" e "O teorema CAP". <strong>IA (registre no <code>PROMPTS.md</code>):</strong> <em>"O que significa 'consistência eventual' entre duas réplicas e o que é 'versão' de um dado replicado? Explique o conceito, sem me dar código."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> O <code>replicas_sim.py</code> rodando na sua máquina e commitado no repositório <code>sd-2026-2</code>.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 2 ================= -->
+  <div class="mission" id="m2">
+  <h2>Missão 2 — Provocar a partição e registrar a divergência <span class="tag">experimento</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> cortar a rede entre <code>A</code> e <code>B</code>, escrever só em <code>A</code> e <strong>capturar o instante</strong> em que as cópias passam a discordar.</p>
+
+  <h3>Passo 1 — observe o Cenário 2</h3>
+  <p>Na saída, ache a linha <code>&gt;&gt;&gt; MOMENTO DA DIVERGENCIA: A=v2 B=v1 &lt;&lt;&lt;</code>. Esse é o ponto que o seu relatório precisa citar: a <strong>primeira escrita que não cruzou a partição</strong>.</p>
+
+  <h3>Passo 2 — torne o experimento <em>seu</em></h3>
+  <p>Edite o bloco <code>if __name__ == "__main__":</code> e <strong>amplie o cenário</strong>:</p>
+  <ol>
+    <li>Faça <strong>mais uma escrita</strong> durante a partição (ex.: <code>c.escrever("preco=30")</code>) e confirme que <code>B</code> continua parado em <code>v1</code>.</li>
+    <li>Leia de <code>A</code> e de <code>B</code> <strong>no mesmo instante</strong> e imprima os dois lado a lado — a divergência fica explícita (um cliente em cada réplica vê um preço diferente).</li>
+    <li>Anote, em texto, <strong>quantas versões</strong> <code>A</code> ficou à frente de <code>B</code> durante a partição.</li>
+  </ol>
+
+  <ul class="check">
+    <li>identifiquei a linha do <strong>momento da divergência</strong> na saída</li>
+    <li>acrescentei ao menos uma escrita extra sob partição</li>
+    <li>imprimi leitura de <code>A</code> × leitura de <code>B</code> mostrando valores diferentes</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> O "corte" da rede é só a flag <code>self.particionado</code> (métodos <code>particionar()</code> / <code>curar()</code>). <strong>IA (registre):</strong> <em>"Explique por que, durante uma partição de rede, uma escrita que chega a uma réplica pode não chegar à outra — sem me dar código."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> Sua versão ampliada do <code>replicas_sim.py</code> + a saída colada no <code>relatorio_cap.md</code>, com o <strong>momento da divergência</strong> destacado.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 3 ================= -->
+  <div class="mission" id="m3">
+  <h2>Missão 3 — Escolher o lado do CAP (AP × CP) <span class="tag">decidir</span> <span class="tempo">~20 min</span></h2>
+  <p><strong>Objetivo:</strong> sentir, no código, que sob partição <strong>não dá</strong> para ter C e A ao mesmo tempo — e que os <strong>dois</strong> comportamentos são legítimos, dependendo do dado.</p>
+
+  <h3>Passo 1 — compare os dois modos</h3>
+  <p>No Cenário 3, a mesma leitura roda em dois modos:</p>
+<pre><code>c.ler_de_B(modo="AP")   <span class="c"># responde o valor ANTIGO  -> mantem A, abre mao de C</span>
+c.ler_de_B(modo="CP")   <span class="c"># recusa com 503          -> mantem C, abre mao de A</span></code></pre>
+
+  <h3>Passo 2 — implemente uma regra de negócio</h3>
+  <p>Crie uma função <code>ler(dado, modo)</code> que escolhe o modo <strong>pelo tipo do dado</strong>: por exemplo, <code>"saldo"</code> e <code>"estoque"</code> usam <strong>CP</strong>; <code>"curtidas"</code> e <code>"catalogo"</code> usam <strong>AP</strong>. Rode sob partição e mostre que o saldo é recusado enquanto as curtidas continuam respondendo.</p>
+
+  <ul class="check">
+    <li>rodei a leitura nos modos AP e CP e entendi a troca</li>
+    <li>escrevi uma regra que escolhe AP/CP pelo <strong>tipo do dado</strong></li>
+    <li>demonstrei: saldo recusa (CP) e curtidas respondem (AP) sob a mesma partição</li>
+  </ul>
+  <div class="box travou">
+    <p><span class="rot">🧭 Travou?</span> Reveja a tabela "CP × AP" dos slides. <strong>IA (registre):</strong> <em>"Dê exemplos de dados que pedem consistência forte (CP) e de dados que toleram consistência eventual (AP), e por quê. Sem código."</em></p>
+  </div>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> A função que escolhe AP/CP por tipo de dado + a saída demonstrando os dois comportamentos sob a mesma partição.</p></div>
+  </div>
+
+  <!-- ================= MISSÃO 4 ================= -->
+  <div class="mission" id="m4">
+  <h2>Missão 4 — Relatório CAP + avançar o C2.A2 <span class="tag">entregar</span> <span class="tempo">~15 min</span></h2>
+  <p><strong>Objetivo:</strong> consolidar a decisão de projeto por escrito e manter o trabalho avaliado andando.</p>
+  <ol>
+    <li><strong>Escreva o <code>relatorio_cap.md</code></strong>: (a) descreva o experimento e cite o <strong>momento da divergência</strong>; (b) dê <strong>duas justificativas</strong> — um caso em que você escolheria <strong>CP</strong> e outro em que escolheria <strong>AP</strong>, cada um com o <strong>tipo de dado</strong>.</li>
+    <li><strong>No C2.A2 (RAG):</strong> deixe o <strong>serviço de recuperação</strong> respondendo a uma consulta de ponta a ponta. Pense: se o índice vetorial fosse replicado, a busca deveria ser <strong>AP</strong> ou <strong>CP</strong>? Registre sua escolha no relatório.</li>
+  </ol>
+  <ul class="check">
+    <li><code>relatorio_cap.md</code> com o experimento + as <strong>duas justificativas</strong> (CP e AP)</li>
+    <li>serviço de recuperação do C2.A2 respondendo a uma consulta</li>
+    <li>decisão AP/CP para o índice vetorial registrada no relatório</li>
+  </ul>
+  <div class="box entrega"><p><span class="rot">✅ Entregável.</span> <code>relatorio_cap.md</code> no repositório + o serviço de recuperação do C2.A2 funcionando.</p></div>
+  </div>
+
+  <!-- ================= DESAFIOS ================= -->
+  <h2 id="desafios">Desafios — para quem voar 🚀</h2>
+  <p>Terminou as missões? Escolha um. Cada um é ótimo para o ENADE e para o C2.A2/C3.A2:</p>
+  <ul>
+    <li><strong>Quórum (R + W &gt; N):</strong> estenda a simulação para <strong>3 réplicas</strong> e exija que uma escrita/leitura seja confirmada por uma <strong>maioria</strong>. Mostre que, com maioria, dá para evitar ler dado velho mesmo com <strong>uma</strong> réplica particionada — a ponte para o <strong>consenso (Aula 11)</strong>.</li>
+    <li><strong>Resolução de conflito:</strong> permita escritas <strong>nos dois lados</strong> durante a partição e, ao curar, resolva o conflito por uma regra (ex.: <em>last-write-wins</em> por versão, ou guarde as duas versões). Qual regra perde dados?</li>
+    <li><strong>Janela de inconsistência:</strong> meça (em "passos" da simulação) <strong>quanto tempo</strong> <code>B</code> ficou desatualizado. Relacione com a experiência do usuário em consistência eventual.</li>
+  </ul>
+
+  <!-- ================= RUBRICA ================= -->
+  <h2 id="rubrica">Autoverificação (antes de entregar)</h2>
+  <ul class="check">
+    <li><strong>Missão 1:</strong> <code>replicas_sim.py</code> rodando e commitado</li>
+    <li><strong>Missão 2:</strong> experimento ampliado + momento da divergência no <code>relatorio_cap.md</code></li>
+    <li><strong>Missão 3:</strong> regra que escolhe AP/CP por tipo de dado, demonstrada</li>
+    <li><strong>Missão 4:</strong> <code>relatorio_cap.md</code> com as duas justificativas + recuperação do C2.A2 no ar</li>
+    <li><strong><code>PROMPTS.md</code></strong> preenchido com as ajudas (docs/IA/colega) que você usou</li>
+  </ul>
+  <div class="box aviso"><p><span class="rot">📌 Entregar até a próxima aula.</span> O <code>relatorio_cap.md</code> (experimento + divergência + as duas justificativas CP/AP) · a sua versão do <code>replicas_sim.py</code> · o <code>PROMPTS.md</code> · e o serviço de recuperação do <strong>C2.A2</strong> funcionando.</p></div>
+
+  <footer>
+    <a href="aula-10-replicacao-consistencia-cap.html">← Slides da Aula 10</a>
+    <a href="../index.html">☰ Índice</a>
+    <a href="https://github.com/howardroatti/sd-2026-2-kit-c2a2" target="_blank">Kit C2.A2</a>
+    <div style="margin-top:8px">Prof. M.Sc. Howard Cruz Roatti · FAESA · Sistemas Distribuídos e Computação em Nuvem · 2026/2</div>
+  </footer>
+
+</main>
+</body>
+</html>
